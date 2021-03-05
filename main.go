@@ -19,16 +19,6 @@ const (
 	defaultFetchInterval = 1 * time.Minute
 )
 
-var (
-	floatingIP    = fetcher.NewFloatingIP()
-	loadBalancer  = fetcher.NewLoadbalancer()
-	server        = fetcher.NewServer()
-	serverBackup  = fetcher.NewServerBackup()
-	serverTraffic = fetcher.NewServerTraffic()
-	snapshot      = fetcher.NewSnapshot()
-	volume        = fetcher.NewVolume()
-)
-
 func toScheduler(client *hcloud.Client, f func(*hcloud.Client) error) func() {
 	return func() {
 		if err := f(client); err != nil {
@@ -59,6 +49,18 @@ func main() {
 	}
 
 	client := hcloud.NewClient(hcloud.WithToken(hcloudAPIToken))
+	priceRepository := &fetcher.PriceProvider{Client: client}
+
+	var (
+		floatingIP    = fetcher.NewFloatingIP(priceRepository)
+		loadBalancer  = fetcher.NewLoadbalancer(priceRepository)
+		server        = fetcher.NewServer(priceRepository)
+		serverBackup  = fetcher.NewServerBackup(priceRepository)
+		serverTraffic = fetcher.NewServerTraffic(priceRepository)
+		snapshot      = fetcher.NewSnapshot(priceRepository)
+		volume        = fetcher.NewVolume(priceRepository)
+	)
+
 	scheduler.RunTaskAtInterval(toScheduler(client, floatingIP.Run), fetchInterval, 0)
 	scheduler.RunTaskAtInterval(toScheduler(client, loadBalancer.Run), fetchInterval, 0)
 	scheduler.RunTaskAtInterval(toScheduler(client, server.Run), fetchInterval, 0)
@@ -66,6 +68,8 @@ func main() {
 	scheduler.RunTaskAtInterval(toScheduler(client, serverTraffic.Run), fetchInterval, 0)
 	scheduler.RunTaskAtInterval(toScheduler(client, snapshot.Run), fetchInterval, 0)
 	scheduler.RunTaskAtInterval(toScheduler(client, volume.Run), fetchInterval, 0)
+
+	scheduler.RunTaskAtInterval(priceRepository.Sync, 10*fetchInterval, 10*fetchInterval)
 
 	registry := prometheus.NewRegistry()
 	registry.MustRegister(

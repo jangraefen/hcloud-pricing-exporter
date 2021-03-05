@@ -4,15 +4,11 @@ import (
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
-const (
-	floatingIPPrice = float64(1.19)
-)
-
 var _ Fetcher = &floatingIP{}
 
 // NewFloatingIP creates a new fetcher that will collect pricing information on floating IPs.
-func NewFloatingIP() Fetcher {
-	return &floatingIP{newBase("floatingip", "location")}
+func NewFloatingIP(pricing *PriceProvider) Fetcher {
+	return &floatingIP{newBase(pricing, "floatingip", "location")}
 }
 
 type floatingIP struct {
@@ -28,7 +24,7 @@ func (floatingIP floatingIP) Run(client *hcloud.Client) error {
 	for _, f := range floatingIPs {
 		location := f.HomeLocation
 
-		monthlyPrice := floatingIPPrice
+		monthlyPrice := floatingIP.pricing.FloatingIP()
 		hourlyPrice := pricingPerHour(monthlyPrice)
 
 		floatingIP.hourly.WithLabelValues(f.Name, location.Name).Set(hourlyPrice)

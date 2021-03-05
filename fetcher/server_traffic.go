@@ -6,15 +6,11 @@ import (
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
-const (
-	trafficPrice = 1.19
-)
-
 var _ Fetcher = &serverTraffic{}
 
 // NewServerTraffic creates a new fetcher that will collect pricing information on server traffic.
-func NewServerTraffic() Fetcher {
-	return &serverTraffic{newBase("server_traffic", "location", "type")}
+func NewServerTraffic(pricing *PriceProvider) Fetcher {
+	return &serverTraffic{newBase(pricing, "server_traffic", "location", "type")}
 }
 
 type serverTraffic struct {
@@ -37,7 +33,7 @@ func (serverTraffic serverTraffic) Run(client *hcloud.Client) error {
 			break
 		}
 
-		monthlyPrice := math.Ceil(float64(additionalTraffic)/sizeTB) * trafficPrice
+		monthlyPrice := math.Ceil(float64(additionalTraffic)/sizeTB) * serverTraffic.pricing.Traffic()
 		hourlyPrice := pricingPerHour(monthlyPrice)
 
 		serverTraffic.hourly.WithLabelValues(s.Name, location.Name, s.ServerType.Name).Set(hourlyPrice)

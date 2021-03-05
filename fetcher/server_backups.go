@@ -6,15 +6,11 @@ import (
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
-const (
-	backupPriceMultiplier = 0.2
-)
-
 var _ Fetcher = &server{}
 
 // NewServerBackup creates a new fetcher that will collect pricing information on server backups.
-func NewServerBackup() Fetcher {
-	return &serverBackup{newBase("server_backup", "location", "type")}
+func NewServerBackup(pricing *PriceProvider) Fetcher {
+	return &serverBackup{newBase(pricing, "server_backup", "location", "type")}
 }
 
 type serverBackup struct {
@@ -36,8 +32,8 @@ func (serverBackup serverBackup) Run(client *hcloud.Client) error {
 				return err
 			}
 
-			hourlyPrice := toBackupPrice(serverPrice.Hourly.Gross)
-			monthlyPrice := toBackupPrice(serverPrice.Monthly.Gross)
+			hourlyPrice := serverBackup.toBackupPrice(serverPrice.Hourly.Gross)
+			monthlyPrice := serverBackup.toBackupPrice(serverPrice.Monthly.Gross)
 
 			serverBackup.hourly.WithLabelValues(s.Name, location.Name, s.ServerType.Name).Set(hourlyPrice)
 			serverBackup.monthly.WithLabelValues(s.Name, location.Name, s.ServerType.Name).Set(monthlyPrice)
@@ -47,11 +43,11 @@ func (serverBackup serverBackup) Run(client *hcloud.Client) error {
 	return nil
 }
 
-func toBackupPrice(rawServerPrice string) float64 {
-	serverPrice, err := strconv.Atoi(rawServerPrice)
+func (serverBackup serverBackup) toBackupPrice(rawServerPrice string) float64 {
+	serverPrice, err := strconv.ParseFloat(rawServerPrice, 32)
 	if err != nil {
 		return 0
 	}
 
-	return float64(serverPrice) * backupPriceMultiplier
+	return serverPrice * serverBackup.pricing.ServerBackup()
 }

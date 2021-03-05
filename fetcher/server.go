@@ -9,8 +9,8 @@ import (
 var _ Fetcher = &server{}
 
 // NewServer creates a new fetcher that will collect pricing information on servers.
-func NewServer() Fetcher {
-	return &server{newBase("server", "location")}
+func NewServer(pricing *PriceProvider) Fetcher {
+	return &server{newBase(pricing, "server", "location")}
 }
 
 type server struct {

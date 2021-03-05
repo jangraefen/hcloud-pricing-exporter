@@ -6,15 +6,11 @@ import (
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
-const (
-	imagePrice = 0.0119
-)
-
 var _ Fetcher = &snapshot{}
 
 // NewSnapshot creates a new fetcher that will collect pricing information on server snapshots.
-func NewSnapshot() Fetcher {
-	return &snapshot{newBase("snapshot")}
+func NewSnapshot(pricing *PriceProvider) Fetcher {
+	return &snapshot{newBase(pricing, "snapshot")}
 }
 
 type snapshot struct {
@@ -29,7 +25,7 @@ func (snapshot snapshot) Run(client *hcloud.Client) error {
 
 	for _, i := range images {
 		if i.Type == "snapshot" {
-			monthlyPrice := math.Ceil(float64(i.ImageSize)/sizeGB) * imagePrice
+			monthlyPrice := math.Ceil(float64(i.ImageSize)/sizeGB) * snapshot.pricing.Image()
 			hourlyPrice := pricingPerHour(monthlyPrice)
 
 			snapshot.hourly.WithLabelValues(i.Name).Set(hourlyPrice)

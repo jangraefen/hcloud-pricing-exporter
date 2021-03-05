@@ -7,15 +7,11 @@ import (
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
-const (
-	volumePrice = float64(0.0476)
-)
-
 var _ Fetcher = &volume{}
 
 // NewVolume creates a new fetcher that will collect pricing information on volumes.
-func NewVolume() Fetcher {
-	return &server{newBase("volume", "location", "bytes")}
+func NewVolume(pricing *PriceProvider) Fetcher {
+	return &server{newBase(pricing, "volume", "location", "bytes")}
 }
 
 type volume struct {
@@ -29,7 +25,7 @@ func (volume volume) Run(client *hcloud.Client) error {
 	}
 
 	for _, v := range volumes {
-		monthlyPrice := math.Ceil(float64(v.Size/sizeGB)) * volumePrice
+		monthlyPrice := math.Ceil(float64(v.Size/sizeGB)) * volume.pricing.Volume()
 		hourlyPrice := pricingPerHour(monthlyPrice)
 
 		volume.hourly.WithLabelValues(v.Name, v.Location.Name, strconv.Itoa(v.Size)).Set(hourlyPrice)
