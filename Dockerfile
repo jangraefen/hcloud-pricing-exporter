@@ -7,6 +7,7 @@ ADD . /app/
 WORKDIR /app
 
 # Build the application
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${ARCH} go mod download
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=${ARCH} go build -o run .
 
 # Add the execution user

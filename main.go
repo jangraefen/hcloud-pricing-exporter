@@ -19,21 +19,13 @@ const (
 	defaultFetchInterval = 1 * time.Minute
 )
 
-func toScheduler(client *hcloud.Client, f func(*hcloud.Client) error) func() {
-	return func() {
-		if err := f(client); err != nil {
-			panic(err)
-		}
-	}
-}
+var (
+	hcloudAPIToken string
+	port           uint
+	fetchInterval  time.Duration
+)
 
-func main() {
-	var (
-		hcloudAPIToken string
-		port           uint
-		fetchInterval  time.Duration
-	)
-
+func handleFlags() {
 	flag.StringVar(&hcloudAPIToken, "hcloud-token", "", "the token to authenticate against the HCloud API")
 	flag.UintVar(&port, "port", defaultPort, "the port that the exporter exposes its data on")
 	flag.DurationVar(&fetchInterval, "fetch-interval", defaultFetchInterval, "the interval between data fetching cycles")
@@ -47,19 +39,29 @@ func main() {
 	if hcloudAPIToken == "" {
 		panic(fmt.Errorf("no API token for HCloud specified, but required"))
 	}
+}
+
+func toScheduler(client *hcloud.Client, f func(*hcloud.Client) error) func() {
+	return func() {
+		if err := f(client); err != nil {
+			panic(err)
+		}
+	}
+}
+
+func main() {
+	handleFlags()
 
 	client := hcloud.NewClient(hcloud.WithToken(hcloudAPIToken))
 	priceRepository := &fetcher.PriceProvider{Client: client}
 
-	var (
-		floatingIP    = fetcher.NewFloatingIP(priceRepository)
-		loadBalancer  = fetcher.NewLoadbalancer(priceRepository)
-		server        = fetcher.NewServer(priceRepository)
-		serverBackup  = fetcher.NewServerBackup(priceRepository)
-		serverTraffic = fetcher.NewServerTraffic(priceRepository)
-		snapshot      = fetcher.NewSnapshot(priceRepository)
-		volume        = fetcher.NewVolume(priceRepository)
-	)
+	floatingIP := fetcher.NewFloatingIP(priceRepository)
+	loadBalancer := fetcher.NewLoadbalancer(priceRepository)
+	server := fetcher.NewServer(priceRepository)
+	serverBackup := fetcher.NewServerBackup(priceRepository)
+	serverTraffic := fetcher.NewServerTraffic(priceRepository)
+	snapshot := fetcher.NewSnapshot(priceRepository)
+	volume := fetcher.NewVolume(priceRepository)
 
 	scheduler.RunTaskAtInterval(toScheduler(client, floatingIP.Run), fetchInterval, 0)
 	scheduler.RunTaskAtInterval(toScheduler(client, loadBalancer.Run), fetchInterval, 0)

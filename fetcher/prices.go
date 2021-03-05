@@ -8,7 +8,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
-// PriceProvider provides easy access to current HCloud prices
+// PriceProvider provides easy access to current HCloud prices.
 type PriceProvider struct {
 	Client      *hcloud.Client
 	pricing     *hcloud.Pricing
