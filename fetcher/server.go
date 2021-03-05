@@ -8,8 +8,9 @@ import (
 
 var _ Fetcher = &server{}
 
+// NewServer creates a new fetcher that will collect pricing information on servers.
 func NewServer() Fetcher {
-	return &server{new("server", "location")}
+	return &server{newBase("server", "location")}
 }
 
 type server struct {

@@ -8,8 +8,9 @@ import (
 
 var _ Fetcher = &loadBalancer{}
 
+// NewLoadbalancer creates a new fetcher that will collect pricing information on load balancers.
 func NewLoadbalancer() Fetcher {
-	return &loadBalancer{new("loadbalancer", "location", "type")}
+	return &loadBalancer{newBase("loadbalancer", "location", "type")}
 }
 
 type loadBalancer struct {

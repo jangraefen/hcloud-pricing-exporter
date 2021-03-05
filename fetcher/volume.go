@@ -13,8 +13,9 @@ const (
 
 var _ Fetcher = &volume{}
 
+// NewVolume creates a new fetcher that will collect pricing information on volumes.
 func NewVolume() Fetcher {
-	return &server{new("volume", "location", "bytes")}
+	return &server{newBase("volume", "location", "bytes")}
 }
 
 type volume struct {

@@ -12,8 +12,9 @@ const (
 
 var _ Fetcher = &server{}
 
+// NewServerBackup creates a new fetcher that will collect pricing information on server backups.
 func NewServerBackup() Fetcher {
-	return &serverBackup{new("server_backup", "location", "type")}
+	return &serverBackup{newBase("server_backup", "location", "type")}
 }
 
 type serverBackup struct {

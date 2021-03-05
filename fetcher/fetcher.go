@@ -12,9 +12,13 @@ var (
 	ctx = context.Background()
 )
 
+// Fetcher defines a common interface for types that fetch pricing data from the HCloud API.
 type Fetcher interface {
+	// GetHourly returns the prometheus collector that collects pricing data for hourly expenses.
 	GetHourly() prometheus.Collector
+	// GetMonthly returns the prometheus collector that collects pricing data for monthly expenses.
 	GetMonthly() prometheus.Collector
+	// Run executes a new data fetching cycle and updates the prometheus exposed collectors.
 	Run(*hcloud.Client) error
 }
 
@@ -31,7 +35,7 @@ func (fetcher baseFetcher) GetMonthly() prometheus.Collector {
 	return fetcher.monthly
 }
 
-func new(resource string, additionalLabels ...string) *baseFetcher {
+func newBase(resource string, additionalLabels ...string) *baseFetcher {
 	labels := []string{"name"}
 	labels = append(labels, additionalLabels...)
 

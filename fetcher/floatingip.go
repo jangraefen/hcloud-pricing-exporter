@@ -10,8 +10,9 @@ const (
 
 var _ Fetcher = &floatingIP{}
 
+// NewFloatingIP creates a new fetcher that will collect pricing information on floating IPs.
 func NewFloatingIP() Fetcher {
-	return &floatingIP{new("floatingip", "location")}
+	return &floatingIP{newBase("floatingip", "location")}
 }
 
 type floatingIP struct {

@@ -12,8 +12,9 @@ const (
 
 var _ Fetcher = &serverTraffic{}
 
+// NewServerTraffic creates a new fetcher that will collect pricing information on server traffic.
 func NewServerTraffic() Fetcher {
-	return &serverTraffic{new("server_traffic", "location", "type")}
+	return &serverTraffic{newBase("server_traffic", "location", "type")}
 }
 
 type serverTraffic struct {

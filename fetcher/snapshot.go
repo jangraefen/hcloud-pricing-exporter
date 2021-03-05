@@ -12,8 +12,9 @@ const (
 
 var _ Fetcher = &snapshot{}
 
+// NewSnapshot creates a new fetcher that will collect pricing information on server snapshots.
 func NewSnapshot() Fetcher {
-	return &snapshot{new("snapshot")}
+	return &snapshot{newBase("snapshot")}
 }
 
 type snapshot struct {
