@@ -8,8 +8,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
+      targetPort: http-metrics
       protocol: TCP
-      name: http
   selector:
     {{- include "hcloud-pricing-exporter.selectorLabels" . | nindent 4 }}

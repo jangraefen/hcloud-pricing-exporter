@@ -40,17 +40,17 @@ spec:
                   key: {{ .Values.secret.reference.key }}
               {{- end }}
           ports:
-            - name: http
+            - name: http-metrics
               containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /metrics
+              port: http-metrics
           readinessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /metrics
+              port: http-metrics
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
