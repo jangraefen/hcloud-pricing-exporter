@@ -45,5 +45,5 @@ func findLBPricing(location *hcloud.Location, pricings []hcloud.LoadBalancerType
 		}
 	}
 
-	return nil, fmt.Errorf("no pricing found for location %s", location.Name)
+	return nil, fmt.Errorf("no load balancer pricing found for location %s", location.Name)
 }

@@ -45,5 +45,5 @@ func findServerPricing(location *hcloud.Location, pricings []hcloud.ServerTypeLo
 		}
 	}
 
-	return nil, fmt.Errorf("no pricing found for location %s", location.Name)
+	return nil, fmt.Errorf("no server pricing found for location %s", location.Name)
 }
