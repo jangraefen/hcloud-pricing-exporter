@@ -1,8 +1,6 @@
 package fetcher
 
 import (
-	"math"
-
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
@@ -25,7 +23,7 @@ func (snapshot snapshot) Run(client *hcloud.Client) error {
 
 	for _, i := range images {
 		if i.Type == "snapshot" {
-			monthlyPrice := math.Ceil(float64(i.ImageSize)/sizeGB) * snapshot.pricing.Image()
+			monthlyPrice := float64(i.ImageSize) * snapshot.pricing.Image()
 			hourlyPrice := pricingPerHour(monthlyPrice)
 
 			snapshot.hourly.WithLabelValues(i.Name).Set(hourlyPrice)

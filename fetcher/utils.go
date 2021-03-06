@@ -8,7 +8,6 @@ import (
 )
 
 const (
-	sizeGB = 1 << (10 * 3)
 	sizeTB = 1 << (10 * 4)
 )
 

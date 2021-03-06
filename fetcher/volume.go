@@ -1,7 +1,6 @@
 package fetcher
 
 import (
-	"math"
 	"strconv"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -25,7 +24,7 @@ func (volume volume) Run(client *hcloud.Client) error {
 	}
 
 	for _, v := range volumes {
-		monthlyPrice := math.Ceil(float64(v.Size)/sizeGB) * volume.pricing.Volume()
+		monthlyPrice := float64(v.Size) * volume.pricing.Volume()
 		hourlyPrice := pricingPerHour(monthlyPrice)
 
 		volume.hourly.WithLabelValues(v.Name, v.Location.Name, strconv.Itoa(v.Size)).Set(hourlyPrice)
