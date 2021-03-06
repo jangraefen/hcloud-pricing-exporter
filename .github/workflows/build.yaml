@@ -8,9 +8,9 @@ on:
       - LICENSE
       - .gitignore
       - .editorconfig
-      - helm/**
-      - .github/workflows/*-helm.yaml
       - .chartreleaser.yaml
+      - .github/workflows/*-helm.yaml
+      - helm/**
       - version.yaml
   pull_request:
     branches: [ main ]
@@ -19,9 +19,9 @@ on:
       - LICENSE
       - .gitignore
       - .editorconfig
-      - helm/**
-      - .github/workflows/*-helm.yaml
       - .chartreleaser.yaml
+      - .github/workflows/*-helm.yaml
+      - helm/**
       - version.yaml
 
 jobs:
