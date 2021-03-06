@@ -9,16 +9,20 @@ on:
       - .gitignore
       - .editorconfig
       - helm/**
+      - .github/workflows/*-helm.yaml
       - .chartreleaser.yaml
       - version.yaml
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths-ignore:
       - README.md
       - LICENSE
       - .gitignore
       - .editorconfig
       - helm/**
+      - .github/workflows/*-helm.yaml
+      - .chartreleaser.yaml
+      - version.yaml
 
 jobs:
   lint:

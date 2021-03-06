@@ -4,10 +4,12 @@ on:
   push:
     branches: [ main ]
     paths:
+      - .github/workflows/*-helm.yaml
       - helm/**
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths:
+      - .github/workflows/*-helm.yaml
       - helm/**
 
 jobs:
