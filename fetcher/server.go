@@ -40,7 +40,7 @@ func (server server) Run(client *hcloud.Client) error {
 
 func findServerPricing(location *hcloud.Location, pricings []hcloud.ServerTypeLocationPricing) (*hcloud.ServerTypeLocationPricing, error) {
 	for _, pricing := range pricings {
-		if pricing.Location.ID == location.ID {
+		if pricing.Location.Name == location.Name {
 			return &pricing, nil
 		}
 	}

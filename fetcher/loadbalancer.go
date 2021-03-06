@@ -40,7 +40,7 @@ func (loadBalancer loadBalancer) Run(client *hcloud.Client) error {
 
 func findLBPricing(location *hcloud.Location, pricings []hcloud.LoadBalancerTypeLocationPricing) (*hcloud.LoadBalancerTypeLocationPricing, error) {
 	for _, pricing := range pricings {
-		if pricing.Location.ID == location.ID {
+		if pricing.Location.Name == location.Name {
 			return &pricing, nil
 		}
 	}
