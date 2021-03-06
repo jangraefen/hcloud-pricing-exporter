@@ -8,8 +8,15 @@ on:
       - LICENSE
       - .gitignore
       - .editorconfig
+      - helm/**
   pull_request:
     branches: [ master ]
+    paths-ignore:
+      - README.md
+      - LICENSE
+      - .gitignore
+      - .editorconfig
+      - helm/**
 
 jobs:
   lint:

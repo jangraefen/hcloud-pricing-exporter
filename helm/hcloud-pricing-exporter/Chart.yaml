@@ -1,0 +1,8 @@
+apiVersion: v2
+name: hcloud-pricing-exporter
+description: A prometheus exporter for the current pricing and costs of your HCloud account
+
+type: application
+
+version: 0.1.1-r1
+appVersion: 0.1.1

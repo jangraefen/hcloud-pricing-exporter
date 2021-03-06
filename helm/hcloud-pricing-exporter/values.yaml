@@ -1,0 +1,44 @@
+replicaCount: 1
+
+image:
+  repository: jangraefen/hcloud-pricing-exporter
+  pullPolicy: IfNotPresent
+  tag: ""
+
+imagePullSecrets: [ ]
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: { }
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: false
+  annotations: { }
+  hosts:
+    - host: chart-example.local
+  tls: [ ]
+
+secret:
+  create: true
+  token:
+  reference:
+    name:
+    key:
+
+serviceMonitor:
+  create: false
+  interval:
+  labels:
+  scrapeTimeout:
+
+resources: { }
+
+nodeSelector: { }
+
+tolerations: [ ]
+
+affinity: { }
