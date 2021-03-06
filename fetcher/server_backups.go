@@ -24,9 +24,9 @@ func (serverBackup serverBackup) Run(client *hcloud.Client) error {
 	}
 
 	for _, s := range servers {
-		if s.BackupWindow != "" {
-			location := s.Datacenter.Location
+		location := s.Datacenter.Location
 
+		if s.BackupWindow != "" {
 			serverPrice, err := findServerPricing(location, s.ServerType.Pricings)
 			if err != nil {
 				return err
@@ -37,6 +37,9 @@ func (serverBackup serverBackup) Run(client *hcloud.Client) error {
 
 			serverBackup.hourly.WithLabelValues(s.Name, location.Name, s.ServerType.Name).Set(hourlyPrice)
 			serverBackup.monthly.WithLabelValues(s.Name, location.Name, s.ServerType.Name).Set(monthlyPrice)
+		} else {
+			serverBackup.hourly.WithLabelValues(s.Name, location.Name, s.ServerType.Name).Set(0)
+			serverBackup.monthly.WithLabelValues(s.Name, location.Name, s.ServerType.Name).Set(0)
 		}
 	}
 
