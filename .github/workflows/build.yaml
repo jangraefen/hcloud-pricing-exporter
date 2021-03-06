@@ -9,6 +9,8 @@ on:
       - .gitignore
       - .editorconfig
       - helm/**
+      - .chartreleaser.yaml
+      - version.yaml
   pull_request:
     branches: [ master ]
     paths-ignore:
