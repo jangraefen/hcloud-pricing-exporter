@@ -4,6 +4,7 @@
 [![PkgGoDev](https://pkg.go.dev/badge/mod/github.com/jangraefen/hcloud-pricing-exporter)](https://pkg.go.dev/mod/github.com/jangraefen/hcloud-pricing-exporter)
 [![Go Report Card](https://goreportcard.com/badge/github.com/jangraefen/hcloud-pricing-exporter)](https://goreportcard.com/report/github.com/jangraefen/hcloud-pricing-exporter)
 [![Docker Pulls](https://img.shields.io/docker/pulls/jangraefen/hcloud-pricing-exporter)](https://hub.docker.com/r/jangraefen/hcloud-pricing-exporter)
+[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/hcloud-pricing-exporter)](https://artifacthub.io/packages/search?repo=hcloud-pricing-exporter)
 
 A Prometheus exporter that connects to your HCloud account and collects data on your current expenses. The aim is to
 make cost of cloud infrastructure more transparent and manageable, especially for private projects.
