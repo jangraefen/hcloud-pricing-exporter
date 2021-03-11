@@ -4,5 +4,5 @@ description: A prometheus exporter for the current pricing and costs of your HCl
 
 type: application
 
-version: 0.1.5-r1
-appVersion: 0.1.5
+version: 0.2.0-r1
+appVersion: 0.2.0
