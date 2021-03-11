@@ -49,7 +49,10 @@ func (provider *PriceProvider) ServerBackup() float64 {
 
 // Volume returns the current price for a volume per GB per month.
 func (provider *PriceProvider) Volume() float64 {
-	return 0.0476
+	provider.pricingLock.RLock()
+	defer provider.pricingLock.RUnlock()
+
+	return parsePrice(provider.getPricing().Volume.PerGBMonthly.Gross)
 }
 
 // Sync forces the provider to re-fetch prices from the HCloud API.
