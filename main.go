@@ -57,6 +57,7 @@ func main() {
 
 	floatingIP := fetcher.NewFloatingIP(priceRepository)
 	loadBalancer := fetcher.NewLoadbalancer(priceRepository)
+	loadBalancerTraffic := fetcher.NewLoadbalancerTraffic(priceRepository)
 	server := fetcher.NewServer(priceRepository)
 	serverBackup := fetcher.NewServerBackup(priceRepository)
 	serverTraffic := fetcher.NewServerTraffic(priceRepository)
@@ -65,6 +66,7 @@ func main() {
 
 	scheduler.RunTaskAtInterval(toScheduler(client, floatingIP.Run), fetchInterval, 0)
 	scheduler.RunTaskAtInterval(toScheduler(client, loadBalancer.Run), fetchInterval, 0)
+	scheduler.RunTaskAtInterval(toScheduler(client, loadBalancerTraffic.Run), fetchInterval, 0)
 	scheduler.RunTaskAtInterval(toScheduler(client, server.Run), fetchInterval, 0)
 	scheduler.RunTaskAtInterval(toScheduler(client, serverBackup.Run), fetchInterval, 0)
 	scheduler.RunTaskAtInterval(toScheduler(client, serverTraffic.Run), fetchInterval, 0)
@@ -79,6 +81,8 @@ func main() {
 		floatingIP.GetMonthly(),
 		loadBalancer.GetHourly(),
 		loadBalancer.GetMonthly(),
+		loadBalancerTraffic.GetHourly(),
+		loadBalancerTraffic.GetMonthly(),
 		server.GetHourly(),
 		server.GetMonthly(),
 		serverBackup.GetHourly(),
