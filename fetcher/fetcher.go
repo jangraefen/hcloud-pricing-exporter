@@ -15,9 +15,9 @@ var (
 // Fetcher defines a common interface for types that fetch pricing data from the HCloud API.
 type Fetcher interface {
 	// GetHourly returns the prometheus collector that collects pricing data for hourly expenses.
-	GetHourly() prometheus.Collector
+	GetHourly() *prometheus.GaugeVec
 	// GetMonthly returns the prometheus collector that collects pricing data for monthly expenses.
-	GetMonthly() prometheus.Collector
+	GetMonthly() *prometheus.GaugeVec
 	// Run executes a new data fetching cycle and updates the prometheus exposed collectors.
 	Run(*hcloud.Client) error
 }
@@ -28,11 +28,11 @@ type baseFetcher struct {
 	monthly *prometheus.GaugeVec
 }
 
-func (fetcher baseFetcher) GetHourly() prometheus.Collector {
+func (fetcher baseFetcher) GetHourly() *prometheus.GaugeVec {
 	return fetcher.hourly
 }
 
-func (fetcher baseFetcher) GetMonthly() prometheus.Collector {
+func (fetcher baseFetcher) GetMonthly() *prometheus.GaugeVec {
 	return fetcher.monthly
 }
 
@@ -57,5 +57,43 @@ func newBase(pricing *PriceProvider, resource string, additionalLabels ...string
 		pricing: pricing,
 		hourly:  prometheus.NewGaugeVec(hourlyGaugeOpts, labels),
 		monthly: prometheus.NewGaugeVec(monthlyGaugeOpts, labels),
+	}
+}
+
+// Fetchers defines a type for a slice of fetchers that should be handled together.
+type Fetchers []Fetcher
+
+// RegisterCollectors registers all collectors of the contained fetchers into the passed registry.
+func (fetchers Fetchers) RegisterCollectors(registry *prometheus.Registry) {
+	for _, fetcher := range fetchers {
+		registry.MustRegister(
+			fetcher.GetHourly(),
+			fetcher.GetMonthly(),
+		)
+	}
+}
+
+// Run executes all contained fetchers and returns a single error, even when multiple failures occurred.
+func (fetchers Fetchers) Run(client *hcloud.Client) error {
+	errors := prometheus.MultiError{}
+	for _, fetcher := range fetchers {
+		fetcher.GetHourly().Reset()
+		fetcher.GetMonthly().Reset()
+
+		if err := fetcher.Run(client); err != nil {
+			errors.Append(err)
+		}
+	}
+
+	if len(errors) > 0 {
+		return errors
+	}
+	return nil
+}
+
+// MustRun executes all contained fetchers and panics if any of them threw an error.
+func (fetchers Fetchers) MustRun(client *hcloud.Client) {
+	if err := fetchers.Run(client); err != nil {
+		panic(err)
 	}
 }

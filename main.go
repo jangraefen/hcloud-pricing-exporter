@@ -41,59 +41,29 @@ func handleFlags() {
 	}
 }
 
-func toScheduler(client *hcloud.Client, f func(*hcloud.Client) error) func() {
-	return func() {
-		if err := f(client); err != nil {
-			panic(err)
-		}
-	}
-}
-
 func main() {
 	handleFlags()
 
 	client := hcloud.NewClient(hcloud.WithToken(hcloudAPIToken))
 	priceRepository := &fetcher.PriceProvider{Client: client}
 
-	floatingIP := fetcher.NewFloatingIP(priceRepository)
-	loadBalancer := fetcher.NewLoadbalancer(priceRepository)
-	loadBalancerTraffic := fetcher.NewLoadbalancerTraffic(priceRepository)
-	server := fetcher.NewServer(priceRepository)
-	serverBackup := fetcher.NewServerBackup(priceRepository)
-	serverTraffic := fetcher.NewServerTraffic(priceRepository)
-	snapshot := fetcher.NewSnapshot(priceRepository)
-	volume := fetcher.NewVolume(priceRepository)
+	fetchers := fetcher.Fetchers{
+		fetcher.NewFloatingIP(priceRepository),
+		fetcher.NewLoadbalancer(priceRepository),
+		fetcher.NewLoadbalancerTraffic(priceRepository),
+		fetcher.NewServer(priceRepository),
+		fetcher.NewServerBackup(priceRepository),
+		fetcher.NewServerTraffic(priceRepository),
+		fetcher.NewSnapshot(priceRepository),
+		fetcher.NewVolume(priceRepository),
+	}
 
-	scheduler.RunTaskAtInterval(toScheduler(client, floatingIP.Run), fetchInterval, 0)
-	scheduler.RunTaskAtInterval(toScheduler(client, loadBalancer.Run), fetchInterval, 0)
-	scheduler.RunTaskAtInterval(toScheduler(client, loadBalancerTraffic.Run), fetchInterval, 0)
-	scheduler.RunTaskAtInterval(toScheduler(client, server.Run), fetchInterval, 0)
-	scheduler.RunTaskAtInterval(toScheduler(client, serverBackup.Run), fetchInterval, 0)
-	scheduler.RunTaskAtInterval(toScheduler(client, serverTraffic.Run), fetchInterval, 0)
-	scheduler.RunTaskAtInterval(toScheduler(client, snapshot.Run), fetchInterval, 0)
-	scheduler.RunTaskAtInterval(toScheduler(client, volume.Run), fetchInterval, 0)
-
+	fetchers.MustRun(client)
+	scheduler.RunTaskAtInterval(func() { fetchers.MustRun(client) }, fetchInterval, 0)
 	scheduler.RunTaskAtInterval(priceRepository.Sync, 10*fetchInterval, 10*fetchInterval)
 
 	registry := prometheus.NewRegistry()
-	registry.MustRegister(
-		floatingIP.GetHourly(),
-		floatingIP.GetMonthly(),
-		loadBalancer.GetHourly(),
-		loadBalancer.GetMonthly(),
-		loadBalancerTraffic.GetHourly(),
-		loadBalancerTraffic.GetMonthly(),
-		server.GetHourly(),
-		server.GetMonthly(),
-		serverBackup.GetHourly(),
-		serverBackup.GetMonthly(),
-		serverTraffic.GetHourly(),
-		serverTraffic.GetMonthly(),
-		snapshot.GetHourly(),
-		snapshot.GetMonthly(),
-		volume.GetHourly(),
-		volume.GetMonthly(),
-	)
+	fetchers.RegisterCollectors(registry)
 
 	http.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
