@@ -2,6 +2,17 @@ apiVersion: v1
 entries:
   hcloud-pricing-exporter:
   - apiVersion: v2
+    appVersion: 0.3.0
+    created: "2021-03-13T22:48:15.457282448Z"
+    description: A prometheus exporter for the current pricing and costs of your HCloud
+      account
+    digest: 73673bc7460d4022280553d6a2553709ba2253845e5491e2c9ffcdb47fc0e6b6
+    name: hcloud-pricing-exporter
+    type: application
+    urls:
+    - https://github.com/jangraefen/hcloud-pricing-exporter/releases/download/helm-v0.3.0-r1/hcloud-pricing-exporter-0.3.0-r1.tgz
+    version: 0.3.0-r1
+  - apiVersion: v2
     appVersion: 0.2.1
     created: "2021-03-12T15:47:50.352965752Z"
     description: A prometheus exporter for the current pricing and costs of your HCloud
@@ -89,4 +100,4 @@ entries:
     urls:
     - https://github.com/jangraefen/hcloud-pricing-exporter/releases/download/helm-v0.1.1-r1/hcloud-pricing-exporter-0.1.1-r1.tgz
     version: 0.1.1-r1
-generated: "2021-03-12T15:47:50.35314675Z"
+generated: "2021-03-13T22:48:15.45733015Z"
