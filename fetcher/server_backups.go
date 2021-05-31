@@ -52,5 +52,5 @@ func (serverBackup serverBackup) toBackupPrice(rawServerPrice string) float64 {
 		return 0
 	}
 
-	return serverPrice * serverBackup.pricing.ServerBackup()
+	return serverPrice * (serverBackup.pricing.ServerBackup() / 100)
 }
