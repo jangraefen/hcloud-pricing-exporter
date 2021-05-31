@@ -21,4 +21,4 @@ appVersion: 0.3.1
 
 annotations:
   artifacthub.io/changes: |
-    - Add README to the helm chart to document the values
+    - Fixed a bug where the server backup prices were calculated incorrectly.
