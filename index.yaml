@@ -3,6 +3,32 @@ entries:
   hcloud-pricing-exporter:
   - annotations:
       artifacthub.io/changes: |
+        - Use new floating IP pricings
+    apiVersion: v2
+    appVersion: 0.4.0
+    created: "2021-08-24T10:34:57.117158134Z"
+    description: A prometheus exporter for the current pricing and costs of your HCloud
+      account
+    digest: cce3bfd868a5379bbac743f6fbcbda38e915830eddd040aca7b30c82390949d4
+    home: https://github.com/jangraefen/hcloud-pricing-exporter
+    keywords:
+    - hetzner
+    - hcloud
+    - prometheus
+    - monitoring
+    - prices
+    - expenses
+    maintainers:
+    - name: Jan Graefen
+    name: hcloud-pricing-exporter
+    sources:
+    - https://github.com/jangraefen/hcloud-pricing-exporter
+    type: application
+    urls:
+    - https://github.com/jangraefen/hcloud-pricing-exporter/releases/download/helm-v0.4.0-r1/hcloud-pricing-exporter-0.4.0-r1.tgz
+    version: 0.4.0-r1
+  - annotations:
+      artifacthub.io/changes: |
         - Also provide images for ARM v7
     apiVersion: v2
     appVersion: 0.3.2
@@ -204,4 +230,4 @@ entries:
     urls:
     - https://github.com/jangraefen/hcloud-pricing-exporter/releases/download/helm-v0.1.1-r1/hcloud-pricing-exporter-0.1.1-r1.tgz
     version: 0.1.1-r1
-generated: "2021-06-18T18:13:24.641210965Z"
+generated: "2021-08-24T10:34:57.117359147Z"
