@@ -16,9 +16,9 @@ keywords:
 
 type: application
 
-version: 0.3.2-r1
-appVersion: 0.3.2
+version: 0.4.0-r1
+appVersion: 0.4.0
 
 annotations:
   artifacthub.io/changes: |
-    - Also provide images for ARM v7
+    - Use new floating IP pricings
