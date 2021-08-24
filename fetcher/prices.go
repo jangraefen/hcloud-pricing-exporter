@@ -16,10 +16,21 @@ type PriceProvider struct {
 }
 
 // FloatingIP returns the current price for a floating IP per month.
-func (provider *PriceProvider) FloatingIP() float64 {
+func (provider *PriceProvider) FloatingIP(ipType hcloud.FloatingIPType, location string) float64 {
 	provider.pricingLock.RLock()
 	defer provider.pricingLock.RUnlock()
 
+	for _, byType := range provider.getPricing().FloatingIPs {
+		if byType.Type == ipType {
+			for _, pricing := range byType.Pricings {
+				if pricing.Location.Name == location {
+					return parsePrice(pricing.Monthly.Gross)
+				}
+			}
+		}
+	}
+
+	// If the pricing can not be determined by the type and location, we fall back to the old pricing
 	return parsePrice(provider.getPricing().FloatingIP.Monthly.Gross)
 }
 

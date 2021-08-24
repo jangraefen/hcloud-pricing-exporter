@@ -24,7 +24,7 @@ func (floatingIP floatingIP) Run(client *hcloud.Client) error {
 	for _, f := range floatingIPs {
 		location := f.HomeLocation
 
-		monthlyPrice := floatingIP.pricing.FloatingIP()
+		monthlyPrice := floatingIP.pricing.FloatingIP(f.Type, location.Name)
 		hourlyPrice := pricingPerHour(monthlyPrice)
 
 		floatingIP.hourly.WithLabelValues(f.Name, location.Name).Set(hourlyPrice)
