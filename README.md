@@ -41,7 +41,7 @@ following commands:
 ```shell
 helm repo add hcloud-pricing-exporter https://jangraefen.github.io/hcloud-pricing-exporter
 helm repo update
-helm upgrade --install hcloud-pricing-exporter hcloud-pricing-exporter/hcloud-pricing-exporter
+helm upgrade --install hcloud-pricing-exporter hcloud-pricing-exporter/hcloud-pricing-exporter --version {VERSION}
 ```
 
 ## Exported metrics
