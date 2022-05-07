@@ -29,29 +29,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install Go
-        uses: actions/setup-go@v1
+        uses: actions/setup-go@v3
         with:
-          go-version: ^1.16
+          go-version: ^1.18
       - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Install golangci-lint
-        run: |
-          go get github.com/golangci/golangci-lint/cmd/golangci-lint
-      - name: Run linters
-        run: |
-          export PATH=$PATH:$(go env GOPATH)/bin
-          go mod download
-          golangci-lint run
+        uses: actions/checkout@v3
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.45
 
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Install Go
-        uses: actions/setup-go@v1
+        uses: actions/setup-go@v3
         with:
-          go-version: ^1.16
+          go-version: ^1.18
       - name: Checkout code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
       - name: Get dependencies
         run: |
           export GO111MODULE=on
