@@ -17,9 +17,13 @@ linters:
     - golint
     - goprintffuncname
     - gosec
-    - interfacer
-    - maligned
     - prealloc
+    - revive
     - stylecheck
     - unconvert
     - whitespace
+
+linters-settings:
+  govet:
+    check-shadowing: true
+    enable-all: true
