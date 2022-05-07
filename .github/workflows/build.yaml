@@ -31,17 +31,13 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v1
         with:
-          go-version: ^1.16
+          go-version: ^1.18
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Install golangci-lint
-        run: |
-          go get github.com/golangci/golangci-lint/cmd/golangci-lint
-      - name: Run linters
-        run: |
-          export PATH=$PATH:$(go env GOPATH)/bin
-          go mod download
-          golangci-lint run
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.45
 
   build:
     runs-on: ubuntu-latest
@@ -49,7 +45,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v1
         with:
-          go-version: ^1.16
+          go-version: ^1.18
       - name: Checkout code
         uses: actions/checkout@v1
       - name: Get dependencies
