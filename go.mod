@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/hetznercloud/hcloud-go v1.33.2
 	github.com/jtaczanowski/go-scheduler v0.1.0
-	github.com/prometheus/client_golang v1.12.1
+	github.com/prometheus/client_golang v1.12.2
 )
 
 require (
