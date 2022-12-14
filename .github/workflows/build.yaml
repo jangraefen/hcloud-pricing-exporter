@@ -34,6 +34,10 @@ jobs:
           go-version: ^1.19
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Get dependencies
+        run: |
+          export GO111MODULE=on
+          go get -v -t -d ./...
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:

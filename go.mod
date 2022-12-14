@@ -1,5 +1,7 @@
 module github.com/jangraefen/hcloud-pricing-exporter
 
+go 1.19
+
 require (
 	github.com/hetznercloud/hcloud-go v1.38.0
 	github.com/jtaczanowski/go-scheduler v0.1.0
