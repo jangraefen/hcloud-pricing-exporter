@@ -2,6 +2,7 @@ package fetcher
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"sync"
 
@@ -32,6 +33,24 @@ func (provider *PriceProvider) FloatingIP(ipType hcloud.FloatingIPType, location
 
 	// If the pricing can not be determined by the type and location, we fall back to the old pricing
 	return parsePrice(provider.getPricing().FloatingIP.Monthly.Gross)
+}
+
+// PrimaryIP returns the current price for a primary IP per hour and month.
+func (provider *PriceProvider) PrimaryIP(ipType hcloud.PrimaryIPType, datacenter string) (hourly, monthly float64, err error) {
+	provider.pricingLock.RLock()
+	defer provider.pricingLock.RUnlock()
+
+	for _, byType := range provider.getPricing().PrimaryIPs {
+		if byType.Type == string(ipType) {
+			for _, pricing := range byType.Pricings {
+				if pricing.Datacenter == datacenter {
+					return parsePrice(pricing.Hourly.Gross), parsePrice(pricing.Monthly.Gross), nil
+				}
+			}
+		}
+	}
+
+	return 0, 0, fmt.Errorf("no primary IP pricing found for datacenter %s", datacenter)
 }
 
 // Image returns the current price for an image per GB per month.

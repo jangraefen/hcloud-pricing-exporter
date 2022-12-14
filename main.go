@@ -49,6 +49,7 @@ func main() {
 
 	fetchers := fetcher.Fetchers{
 		fetcher.NewFloatingIP(priceRepository),
+		fetcher.NewPrimaryIP(priceRepository),
 		fetcher.NewLoadbalancer(priceRepository),
 		fetcher.NewLoadbalancerTraffic(priceRepository),
 		fetcher.NewServer(priceRepository),
