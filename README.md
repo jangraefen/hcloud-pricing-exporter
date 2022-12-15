@@ -1,6 +1,6 @@
 # hcloud-pricing-exporter
 
-[![Build Status](https://img.shields.io/github/workflow/status/jangraefen/hcloud-pricing-exporter/Build?logo=GitHub)](https://github.com/jangraefen/hcloud-pricing-exporter/actions?query=workflow:Build)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/jangraefen/hcloud-pricing-exporter/build.yaml?branch=main&logo=GitHub)](https://github.com/jangraefen/hcloud-pricing-exporter/actions?query=workflow:Build)
 [![PkgGoDev](https://pkg.go.dev/badge/mod/github.com/jangraefen/hcloud-pricing-exporter)](https://pkg.go.dev/mod/github.com/jangraefen/hcloud-pricing-exporter)
 [![Go Report Card](https://goreportcard.com/badge/github.com/jangraefen/hcloud-pricing-exporter)](https://goreportcard.com/report/github.com/jangraefen/hcloud-pricing-exporter)
 [![Docker Pulls](https://img.shields.io/docker/pulls/jangraefen/hcloud-pricing-exporter)](https://hub.docker.com/r/jangraefen/hcloud-pricing-exporter)
