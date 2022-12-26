@@ -8,7 +8,7 @@ var _ Fetcher = &floatingIP{}
 
 // NewPrimaryIP creates a new fetcher that will collect pricing information on primary IPs.
 func NewPrimaryIP(pricing *PriceProvider) Fetcher {
-	return &primaryIP{newBase(pricing, "primaryip", "datacenter")}
+	return &primaryIP{newBase(pricing, "primaryip", "location")}
 }
 
 type primaryIP struct {
@@ -24,7 +24,7 @@ func (primaryIP primaryIP) Run(client *hcloud.Client) error {
 	for _, p := range primaryIPs {
 		datacenter := p.Datacenter
 
-		hourlyPrice, monthlyPrice, err := primaryIP.pricing.PrimaryIP(p.Type, datacenter.Name)
+		hourlyPrice, monthlyPrice, err := primaryIP.pricing.PrimaryIP(p.Type, datacenter.Location.Name)
 		if err != nil {
 			return err
 		}
