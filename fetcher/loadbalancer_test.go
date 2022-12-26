@@ -1,0 +1,49 @@
+package fetcher_test
+
+import (
+	"context"
+
+	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/jangraefen/hcloud-pricing-exporter/fetcher"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+	"github.com/prometheus/client_golang/prometheus/testutil"
+)
+
+var _ = Describe("For loadbalancers", func() {
+	sut := fetcher.NewLoadbalancer(&fetcher.PriceProvider{Client: testClient})
+
+	BeforeEach(func(ctx context.Context) {
+		location, _, err := testClient.Location.GetByName(ctx, "fsn1")
+		Expect(err).NotTo(HaveOccurred())
+
+		lbType, _, err := testClient.LoadBalancerType.GetByName(ctx, "lb11")
+		Expect(err).NotTo(HaveOccurred())
+
+		res, _, err := testClient.LoadBalancer.Create(ctx, hcloud.LoadBalancerCreateOpts{
+			Name:             "test-loadbalancer",
+			Labels:           testLabels,
+			Location:         location,
+			LoadBalancerType: lbType,
+		})
+		Expect(err).ShouldNot(HaveOccurred())
+		DeferCleanup(testClient.LoadBalancer.Delete, res.LoadBalancer)
+	})
+
+	When("getting prices", func() {
+		It("should fetch them", func() {
+			Expect(sut.Run(testClient)).To(Succeed())
+		})
+
+		It("should get prices for correct values", func() {
+			Eventually(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-loadbalancer", "fsn1", "lb11"))).Should(BeNumerically(">", 0.0))
+			Eventually(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-loadbalancer", "fsn1", "lb11"))).Should(BeNumerically(">", 0.0))
+		})
+
+		It("should get zero for incorrect values", func() {
+			Eventually(testutil.ToFloat64(sut.GetHourly().WithLabelValues("invalid-name", "fsn1", "lb11"))).Should(BeNumerically("==", 0))
+			Eventually(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-loadbalancer", "nbg1", "lb11"))).Should(BeNumerically("==", 0))
+			Eventually(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-loadbalancer", "fsn1", "lb21"))).Should(BeNumerically("==", 0))
+		})
+	})
+})
