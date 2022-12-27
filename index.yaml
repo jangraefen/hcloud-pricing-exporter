@@ -4,7 +4,7 @@ entries:
   - annotations:
       artifacthub.io/changes: |
         - Add support for primary IP addresses.
-				- General maintenance and updating of dependencies.
+        - General maintenance and updating of dependencies.
     apiVersion: v2
     appVersion: 0.5.0
     created: "2022-12-14T15:02:25.026014671Z"
