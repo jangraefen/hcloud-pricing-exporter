@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths-ignore:
       - README.md
       - LICENSE
@@ -13,7 +13,7 @@ on:
       - helm/**
       - version.yaml
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths-ignore:
       - README.md
       - LICENSE
@@ -68,3 +68,25 @@ jobs:
         with:
           name: binaries
           path: bin/
+
+  test:
+    runs-on: ubuntu-latest
+    # if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^1.19
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Get dependencies
+        run: |
+          export GO111MODULE=on
+          go get -v -t -d ./...
+      - name: Run tests
+        run: go test -v -race -covermode=atomic "-coverprofile=coverprofile.out" ./...
+      - name: Report coverage
+        uses: codecov/codecov-action@v3
+        with:
+          file: coverprofile.out
+          fail_ci_if_error: true
