@@ -29,6 +29,7 @@ var _ = Describe("For volumes", Ordered, Label("volumes"), func() {
 		waitUntilActionSucceeds(ctx, res.Action)
 	})
 
+	//nolint:dupl
 	When("getting prices", func() {
 		It("should fetch them", func() {
 			Expect(sut.Run(testClient)).To(Succeed())
