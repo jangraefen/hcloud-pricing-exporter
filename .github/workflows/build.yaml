@@ -84,6 +84,8 @@ jobs:
           export GO111MODULE=on
           go get -v -t -d ./...
       - name: Run tests
+        env:
+          HCLOUD_API_TOKEN: ${{ secrets.HCLOUD_API_TOKEN }}
         run: go test -v -race -covermode=atomic "-coverprofile=coverprofile.out" ./...
       - name: Report coverage
         uses: codecov/codecov-action@v3
