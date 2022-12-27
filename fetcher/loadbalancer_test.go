@@ -10,10 +10,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus/testutil"
 )
 
-var _ = Describe("For loadbalancers", func() {
+var _ = Describe("For loadbalancers", Ordered, Label("loadbalancers"), func() {
 	sut := fetcher.NewLoadbalancer(&fetcher.PriceProvider{Client: testClient})
 
-	BeforeEach(func(ctx context.Context) {
+	BeforeAll(func(ctx context.Context) {
 		location, _, err := testClient.Location.GetByName(ctx, "fsn1")
 		Expect(err).NotTo(HaveOccurred())
 
@@ -28,6 +28,8 @@ var _ = Describe("For loadbalancers", func() {
 		})
 		Expect(err).ShouldNot(HaveOccurred())
 		DeferCleanup(testClient.LoadBalancer.Delete, res.LoadBalancer)
+
+		waitUntilActionSucceeds(ctx, res.Action)
 	})
 
 	When("getting prices", func() {
@@ -36,14 +38,14 @@ var _ = Describe("For loadbalancers", func() {
 		})
 
 		It("should get prices for correct values", func() {
-			Eventually(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-loadbalancer", "fsn1", "lb11"))).Should(BeNumerically(">", 0.0))
-			Eventually(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-loadbalancer", "fsn1", "lb11"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-loadbalancer", "fsn1", "lb11"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-loadbalancer", "fsn1", "lb11"))).Should(BeNumerically(">", 0.0))
 		})
 
 		It("should get zero for incorrect values", func() {
-			Eventually(testutil.ToFloat64(sut.GetHourly().WithLabelValues("invalid-name", "fsn1", "lb11"))).Should(BeNumerically("==", 0))
-			Eventually(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-loadbalancer", "nbg1", "lb11"))).Should(BeNumerically("==", 0))
-			Eventually(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-loadbalancer", "fsn1", "lb21"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("invalid-name", "fsn1", "lb11"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-loadbalancer", "nbg1", "lb11"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-loadbalancer", "fsn1", "lb21"))).Should(BeNumerically("==", 0))
 		})
 	})
 })

@@ -10,10 +10,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus/testutil"
 )
 
-var _ = Describe("For floating IPs", func() {
+var _ = Describe("For floating IPs", Ordered, Label("floatingips"), func() {
 	sut := fetcher.NewFloatingIP(&fetcher.PriceProvider{Client: testClient})
 
-	BeforeEach(func(ctx context.Context) {
+	BeforeAll(func(ctx context.Context) {
 		location, _, err := testClient.Location.GetByName(ctx, "fsn1")
 		Expect(err).NotTo(HaveOccurred())
 
@@ -25,6 +25,8 @@ var _ = Describe("For floating IPs", func() {
 		})
 		Expect(err).ShouldNot(HaveOccurred())
 		DeferCleanup(testClient.FloatingIP.Delete, res.FloatingIP)
+
+		waitUntilActionSucceeds(ctx, res.Action)
 	})
 
 	When("getting prices", func() {
@@ -33,13 +35,13 @@ var _ = Describe("For floating IPs", func() {
 		})
 
 		It("should get prices for correct values", func() {
-			Eventually(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-floatingip", "fsn1"))).Should(BeNumerically(">", 0.0))
-			Eventually(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-floatingip", "fsn1"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-floatingip", "fsn1"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-floatingip", "fsn1"))).Should(BeNumerically(">", 0.0))
 		})
 
 		It("should get zero for incorrect values", func() {
-			Eventually(testutil.ToFloat64(sut.GetHourly().WithLabelValues("invalid-name", "fsn1"))).Should(BeNumerically("==", 0))
-			Eventually(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-floatingip", "nbg1"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("invalid-name", "fsn1"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-floatingip", "nbg1"))).Should(BeNumerically("==", 0))
 		})
 	})
 })
