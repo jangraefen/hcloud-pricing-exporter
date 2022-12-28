@@ -6,7 +6,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
-var _ Fetcher = &server{}
+var _ Fetcher = &serverBackup{}
 
 // NewServerBackup creates a new fetcher that will collect pricing information on server backups.
 func NewServerBackup(pricing *PriceProvider) Fetcher {
