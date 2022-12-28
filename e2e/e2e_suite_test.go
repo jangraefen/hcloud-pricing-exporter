@@ -1,4 +1,4 @@
-package fetcher_test
+package e2e_test
 
 import (
 	"testing"
@@ -12,11 +12,11 @@ var (
 	testClient = hcloud.NewClient(hcloud.WithToken(hcloudAPITokenFromENV()))
 	testLabels = map[string]string{
 		"test":  "github.com_jangraefen_hcloud-pricing-exporter",
-		"suite": "fetcher_suite_test",
+		"suite": "e2e_suite_test",
 	}
 )
 
 func TestFetcher(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Fetcher Suite")
+	RunSpecs(t, "E2E Suite")
 }
