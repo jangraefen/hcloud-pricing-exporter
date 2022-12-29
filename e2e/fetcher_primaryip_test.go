@@ -10,7 +10,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/testutil"
 )
 
-var _ = Describe("For primary IPs", Pending, Ordered, Label("primaryips"), func() {
+var _ = Describe("For primary IPs", Ordered, Label("primaryips"), func() {
 	sut := fetcher.NewPrimaryIP(&fetcher.PriceProvider{Client: testClient})
 
 	BeforeAll(func(ctx context.Context) {
@@ -49,22 +49,22 @@ var _ = Describe("For primary IPs", Pending, Ordered, Label("primaryips"), func(
 
 		It("should get prices for correct values for v4", func() {
 			By("Checking IPv4 prices")
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-primaryipv4", "fsn1"))).Should(BeNumerically(">", 0.0))
-			Expect(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-primaryipv4", "fsn1"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-primaryipv4", "fsn1-dc14"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-primaryipv4", "fsn1-dc14"))).Should(BeNumerically(">", 0.0))
 		})
 
 		It("should get prices for correct values for v6", func() {
 			By("Checking IPv6 prices")
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-primaryipv6", "fsn1"))).Should(BeNumerically("==", 0.0))
-			Expect(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-primaryipv6", "fsn1"))).Should(BeNumerically("==", 0.0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-primaryipv6", "fsn1-dc14"))).Should(BeNumerically("==", 0.0))
+			Expect(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-primaryipv6", "fsn1-dc14"))).Should(BeNumerically("==", 0.0))
 		})
 
 		It("should get zero for incorrect values", func() {
 			By("Checking IPv4 prices")
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("invalid-name", "fsn1"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("invalid-name", "fsn1-dc14"))).Should(BeNumerically("==", 0))
 
 			By("Checking IPv6 prices")
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-primaryip", "nbg1"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-primaryip", "nbg1-dc14"))).Should(BeNumerically("==", 0))
 		})
 	})
 })
