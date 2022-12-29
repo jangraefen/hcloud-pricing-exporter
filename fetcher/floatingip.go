@@ -8,7 +8,7 @@ var _ Fetcher = &floatingIP{}
 
 // NewFloatingIP creates a new fetcher that will collect pricing information on floating IPs.
 func NewFloatingIP(pricing *PriceProvider) Fetcher {
-	return &floatingIP{newBase(pricing, "floatingip", "location")}
+	return &floatingIP{newBase(pricing, "floatingip", "location", "type")}
 }
 
 type floatingIP struct {
@@ -27,8 +27,8 @@ func (floatingIP floatingIP) Run(client *hcloud.Client) error {
 		monthlyPrice := floatingIP.pricing.FloatingIP(f.Type, location.Name)
 		hourlyPrice := pricingPerHour(monthlyPrice)
 
-		floatingIP.hourly.WithLabelValues(f.Name, location.Name).Set(hourlyPrice)
-		floatingIP.monthly.WithLabelValues(f.Name, location.Name).Set(monthlyPrice)
+		floatingIP.hourly.WithLabelValues(f.Name, location.Name, string(f.Type)).Set(hourlyPrice)
+		floatingIP.monthly.WithLabelValues(f.Name, location.Name, string(f.Type)).Set(monthlyPrice)
 	}
 
 	return nil

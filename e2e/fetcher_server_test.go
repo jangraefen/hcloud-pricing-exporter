@@ -67,6 +67,7 @@ var _ = Describe("For servers", Ordered, Label("servers"), func() {
 		waitUntilActionSucceeds(ctx, action)
 	})
 
+	//nolint:dupl
 	When("getting prices", func() {
 		It("should fetch them", func() {
 			By("Running the price collection")
