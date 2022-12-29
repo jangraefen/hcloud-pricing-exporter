@@ -18,7 +18,7 @@ var _ = Describe("For floating IPs", Ordered, Label("floatingips"), func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		res, _, err := testClient.FloatingIP.Create(ctx, hcloud.FloatingIPCreateOpts{
-			Name:         hcloud.String("test-floatingip"),
+			Name:         hcloud.Ptr("test-floatingip"),
 			Labels:       testLabels,
 			HomeLocation: location,
 			Type:         hcloud.FloatingIPTypeIPv6,
