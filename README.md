@@ -50,8 +50,8 @@ helm upgrade --install hcloud-pricing-exporter hcloud-pricing-exporter/hcloud-pr
 - `hcloud_pricing_floatingip_monthly{name, location, type}`
 - `hcloud_pricing_loadbalancer_hourly{name, location, type}`
 - `hcloud_pricing_loadbalancer_monthly{name, location, type}`
-- `hcloud_pricing_primaryip_hourly{name, location, type}`
-- `hcloud_pricing_primaryip_monthly{name, location, type}`
+- `hcloud_pricing_primaryip_hourly{name, datacenter, type}`
+- `hcloud_pricing_primaryip_monthly{name, datacenter, type}`
 - `hcloud_pricing_server_hourly{name, location, type}`
 - `hcloud_pricing_server_monthly{name, location, type}`
 - `hcloud_pricing_server_backups_hourly{name, location, type}`

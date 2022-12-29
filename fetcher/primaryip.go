@@ -24,7 +24,7 @@ func (primaryIP primaryIP) Run(client *hcloud.Client) error {
 	for _, p := range primaryIPs {
 		datacenter := p.Datacenter
 
-		hourlyPrice, monthlyPrice, err := primaryIP.pricing.PrimaryIP(p.Type, datacenter.Name)
+		hourlyPrice, monthlyPrice, err := primaryIP.pricing.PrimaryIP(p.Type, datacenter.Location.Name)
 		if err != nil {
 			return err
 		}
