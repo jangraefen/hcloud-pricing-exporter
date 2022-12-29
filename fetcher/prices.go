@@ -36,21 +36,26 @@ func (provider *PriceProvider) FloatingIP(ipType hcloud.FloatingIPType, location
 }
 
 // PrimaryIP returns the current price for a primary IP per hour and month.
-func (provider *PriceProvider) PrimaryIP(ipType hcloud.PrimaryIPType, datacenter string) (hourly, monthly float64, err error) {
+func (provider *PriceProvider) PrimaryIP(ipType hcloud.PrimaryIPType, location string) (hourly, monthly float64, err error) {
 	provider.pricingLock.RLock()
 	defer provider.pricingLock.RUnlock()
+
+	// v6 pricing is not defined by the API
+	if string(ipType) == "ipv6" {
+		return 0, 0, nil
+	}
 
 	for _, byType := range provider.getPricing().PrimaryIPs {
 		if byType.Type == string(ipType) {
 			for _, pricing := range byType.Pricings {
-				if pricing.Datacenter == datacenter {
+				if pricing.Location == location {
 					return parsePrice(pricing.Hourly.Gross), parsePrice(pricing.Monthly.Gross), nil
 				}
 			}
 		}
 	}
 
-	return 0, 0, fmt.Errorf("no primary IP pricing found for datacenter %s", datacenter)
+	return 0, 0, fmt.Errorf("no primary IP pricing found for location %s", location)
 }
 
 // Image returns the current price for an image per GB per month.
