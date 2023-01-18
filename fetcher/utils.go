@@ -39,3 +39,17 @@ func parseToGauge(gauge prometheus.Gauge, value string) {
 	}
 	gauge.Set(parsed)
 }
+
+func parseAdditionalLabels(additionalLabels []string, labels map[string]string) (result []string) {
+alLoop:
+	for _, al := range additionalLabels {
+		for k, v := range labels {
+			if k == al {
+				result = append(result, v)
+				continue alLoop
+			}
+		}
+		result = append(result, "")
+	}
+	return result
+}

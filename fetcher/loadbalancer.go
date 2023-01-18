@@ -9,12 +9,14 @@ import (
 var _ Fetcher = &loadBalancer{}
 
 // NewLoadbalancer creates a new fetcher that will collect pricing information on load balancers.
-func NewLoadbalancer(pricing *PriceProvider) Fetcher {
-	return &loadBalancer{newBase(pricing, "loadbalancer", "location", "type")}
+func NewLoadbalancer(pricing *PriceProvider, additionalLabels ...string) Fetcher {
+	labels := append([]string{"location", "type"}, additionalLabels...)
+	return &loadBalancer{newBase(pricing, "loadbalancer", labels...), additionalLabels}
 }
 
 type loadBalancer struct {
 	*baseFetcher
+	additionalLabels []string
 }
 
 func (loadBalancer loadBalancer) Run(client *hcloud.Client) error {
@@ -26,13 +28,21 @@ func (loadBalancer loadBalancer) Run(client *hcloud.Client) error {
 	for _, lb := range loadBalancers {
 		location := lb.Location
 
+		labels := append([]string{
+			lb.Name,
+			location.Name,
+			lb.LoadBalancerType.Name,
+		},
+			parseAdditionalLabels(loadBalancer.additionalLabels, lb.Labels)...,
+		)
+
 		pricing, err := findLBPricing(location, lb.LoadBalancerType.Pricings)
 		if err != nil {
 			return err
 		}
 
-		parseToGauge(loadBalancer.hourly.WithLabelValues(lb.Name, location.Name, lb.LoadBalancerType.Name), pricing.Hourly.Gross)
-		parseToGauge(loadBalancer.monthly.WithLabelValues(lb.Name, location.Name, lb.LoadBalancerType.Name), pricing.Monthly.Gross)
+		parseToGauge(loadBalancer.hourly.WithLabelValues(labels...), pricing.Hourly.Gross)
+		parseToGauge(loadBalancer.monthly.WithLabelValues(labels...), pricing.Monthly.Gross)
 	}
 
 	return nil

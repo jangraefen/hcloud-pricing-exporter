@@ -7,12 +7,14 @@ import (
 var _ Fetcher = &floatingIP{}
 
 // NewPrimaryIP creates a new fetcher that will collect pricing information on primary IPs.
-func NewPrimaryIP(pricing *PriceProvider) Fetcher {
-	return &primaryIP{newBase(pricing, "primaryip", "datacenter", "type")}
+func NewPrimaryIP(pricing *PriceProvider, additionalLabels ...string) Fetcher {
+	labels := append([]string{"datacenter", "type"}, additionalLabels...)
+	return &primaryIP{newBase(pricing, "primaryip", labels...), additionalLabels}
 }
 
 type primaryIP struct {
 	*baseFetcher
+	additionalLabels []string
 }
 
 func (primaryIP primaryIP) Run(client *hcloud.Client) error {
@@ -29,8 +31,16 @@ func (primaryIP primaryIP) Run(client *hcloud.Client) error {
 			return err
 		}
 
-		primaryIP.hourly.WithLabelValues(p.Name, datacenter.Name, string(p.Type)).Set(hourlyPrice)
-		primaryIP.monthly.WithLabelValues(p.Name, datacenter.Name, string(p.Type)).Set(monthlyPrice)
+		labels := append([]string{
+			p.Name,
+			datacenter.Name,
+			string(p.Type),
+		},
+			parseAdditionalLabels(primaryIP.additionalLabels, p.Labels)...,
+		)
+
+		primaryIP.hourly.WithLabelValues(labels...).Set(hourlyPrice)
+		primaryIP.monthly.WithLabelValues(labels...).Set(monthlyPrice)
 	}
 
 	return nil

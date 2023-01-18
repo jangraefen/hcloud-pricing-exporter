@@ -9,12 +9,14 @@ import (
 var _ Fetcher = &serverBackup{}
 
 // NewServerBackup creates a new fetcher that will collect pricing information on server backups.
-func NewServerBackup(pricing *PriceProvider) Fetcher {
-	return &serverBackup{newBase(pricing, "server_backup", "location", "type")}
+func NewServerBackup(pricing *PriceProvider, additionalLabels ...string) Fetcher {
+	labels := append([]string{"location", "type"}, additionalLabels...)
+	return &serverBackup{newBase(pricing, "server_backup", labels...), additionalLabels}
 }
 
 type serverBackup struct {
 	*baseFetcher
+	additionalLabels []string
 }
 
 func (serverBackup serverBackup) Run(client *hcloud.Client) error {
@@ -26,6 +28,14 @@ func (serverBackup serverBackup) Run(client *hcloud.Client) error {
 	for _, s := range servers {
 		location := s.Datacenter.Location
 
+		labels := append([]string{
+			s.Name,
+			location.Name,
+			s.ServerType.Name,
+		},
+			parseAdditionalLabels(serverBackup.additionalLabels, s.Labels)...,
+		)
+
 		if s.BackupWindow != "" {
 			serverPrice, err := findServerPricing(location, s.ServerType.Pricings)
 			if err != nil {
@@ -35,11 +45,11 @@ func (serverBackup serverBackup) Run(client *hcloud.Client) error {
 			hourlyPrice := serverBackup.toBackupPrice(serverPrice.Hourly.Gross)
 			monthlyPrice := serverBackup.toBackupPrice(serverPrice.Monthly.Gross)
 
-			serverBackup.hourly.WithLabelValues(s.Name, location.Name, s.ServerType.Name).Set(hourlyPrice)
-			serverBackup.monthly.WithLabelValues(s.Name, location.Name, s.ServerType.Name).Set(monthlyPrice)
+			serverBackup.hourly.WithLabelValues(labels...).Set(hourlyPrice)
+			serverBackup.monthly.WithLabelValues(labels...).Set(monthlyPrice)
 		} else {
-			serverBackup.hourly.WithLabelValues(s.Name, location.Name, s.ServerType.Name).Set(0)
-			serverBackup.monthly.WithLabelValues(s.Name, location.Name, s.ServerType.Name).Set(0)
+			serverBackup.hourly.WithLabelValues(labels...).Set(0)
+			serverBackup.monthly.WithLabelValues(labels...).Set(0)
 		}
 	}
 

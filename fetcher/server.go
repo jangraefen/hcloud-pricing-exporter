@@ -9,12 +9,14 @@ import (
 var _ Fetcher = &server{}
 
 // NewServer creates a new fetcher that will collect pricing information on servers.
-func NewServer(pricing *PriceProvider) Fetcher {
-	return &server{newBase(pricing, "server", "location", "type")}
+func NewServer(pricing *PriceProvider, additionalLabels ...string) Fetcher {
+	labels := append([]string{"location", "type"}, additionalLabels...)
+	return &loadBalancer{newBase(pricing, "server", labels...), additionalLabels}
 }
 
 type server struct {
 	*baseFetcher
+	additionalLabels []string
 }
 
 func (server server) Run(client *hcloud.Client) error {
@@ -26,13 +28,21 @@ func (server server) Run(client *hcloud.Client) error {
 	for _, s := range servers {
 		location := s.Datacenter.Location
 
+		labels := append([]string{
+			s.Name,
+			location.Name,
+			s.ServerType.Name,
+		},
+			parseAdditionalLabels(server.additionalLabels, s.Labels)...,
+		)
+
 		pricing, err := findServerPricing(location, s.ServerType.Pricings)
 		if err != nil {
 			return err
 		}
 
-		parseToGauge(server.hourly.WithLabelValues(s.Name, location.Name, s.ServerType.Name), pricing.Hourly.Gross)
-		parseToGauge(server.monthly.WithLabelValues(s.Name, location.Name, s.ServerType.Name), pricing.Monthly.Gross)
+		parseToGauge(server.hourly.WithLabelValues(labels...), pricing.Hourly.Gross)
+		parseToGauge(server.monthly.WithLabelValues(labels...), pricing.Monthly.Gross)
 	}
 
 	return nil

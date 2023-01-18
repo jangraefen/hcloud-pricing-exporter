@@ -7,12 +7,13 @@ import (
 var _ Fetcher = &snapshot{}
 
 // NewSnapshot creates a new fetcher that will collect pricing information on server snapshots.
-func NewSnapshot(pricing *PriceProvider) Fetcher {
-	return &snapshot{newBase(pricing, "snapshot")}
+func NewSnapshot(pricing *PriceProvider, additionalLabels ...string) Fetcher {
+	return &snapshot{newBase(pricing, "snapshot", additionalLabels...), additionalLabels}
 }
 
 type snapshot struct {
 	*baseFetcher
+	additionalLabels []string
 }
 
 func (snapshot snapshot) Run(client *hcloud.Client) error {
@@ -26,8 +27,14 @@ func (snapshot snapshot) Run(client *hcloud.Client) error {
 			monthlyPrice := float64(i.ImageSize) * snapshot.pricing.Image()
 			hourlyPrice := pricingPerHour(monthlyPrice)
 
-			snapshot.hourly.WithLabelValues(i.Name).Set(hourlyPrice)
-			snapshot.monthly.WithLabelValues(i.Name).Set(monthlyPrice)
+			labels := append([]string{
+				i.Name,
+			},
+				parseAdditionalLabels(snapshot.additionalLabels, i.Labels)...,
+			)
+
+			snapshot.hourly.WithLabelValues(labels...).Set(hourlyPrice)
+			snapshot.monthly.WithLabelValues(labels...).Set(monthlyPrice)
 		}
 	}
 
