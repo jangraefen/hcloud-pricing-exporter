@@ -10,13 +10,11 @@ var _ Fetcher = &serverBackup{}
 
 // NewServerBackup creates a new fetcher that will collect pricing information on server backups.
 func NewServerBackup(pricing *PriceProvider, additionalLabels ...string) Fetcher {
-	labels := append([]string{"location", "type"}, additionalLabels...)
-	return &serverBackup{newBase(pricing, "server_backup", labels...), additionalLabels}
+	return &serverBackup{newBase(pricing, "server_backup", []string{"location", "type"}, additionalLabels...)}
 }
 
 type serverBackup struct {
 	*baseFetcher
-	additionalLabels []string
 }
 
 func (serverBackup serverBackup) Run(client *hcloud.Client) error {

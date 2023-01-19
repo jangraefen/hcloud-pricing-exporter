@@ -10,13 +10,11 @@ var _ Fetcher = &loadbalancerTraffic{}
 
 // NewLoadbalancerTraffic creates a new fetcher that will collect pricing information on load balancer traffic.
 func NewLoadbalancerTraffic(pricing *PriceProvider, additionalLabels ...string) Fetcher {
-	labels := append([]string{"location", "type"}, additionalLabels...)
-	return &loadbalancerTraffic{newBase(pricing, "loadbalancer_traffic", labels...), additionalLabels}
+	return &loadbalancerTraffic{newBase(pricing, "loadbalancer_traffic", []string{"location", "type"}, additionalLabels...)}
 }
 
 type loadbalancerTraffic struct {
 	*baseFetcher
-	additionalLabels []string
 }
 
 func (loadbalancerTraffic loadbalancerTraffic) Run(client *hcloud.Client) error {

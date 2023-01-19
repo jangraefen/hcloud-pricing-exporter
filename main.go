@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -74,6 +75,7 @@ func main() {
 	fetchers.RegisterCollectors(registry)
 
 	http.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
+	log.Printf("Listening on: http://0.0.0.0:%d\n", port)
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
 		panic(err)
 	}
