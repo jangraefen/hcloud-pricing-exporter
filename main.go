@@ -47,7 +47,7 @@ func handleFlags() {
 
 	additionalLabelsFlag = strings.TrimSpace(strings.ReplaceAll(additionalLabelsFlag, " ", ""))
 	additionalLabelsSlice := strings.Split(additionalLabelsFlag, ",")
-	if len(additionalLabelsSlice) > 1 && additionalLabelsSlice[0] != "" {
+	if len(additionalLabelsSlice) > 0 && additionalLabelsSlice[0] != "" {
 		additionalLabels = additionalLabelsSlice
 	}
 }
