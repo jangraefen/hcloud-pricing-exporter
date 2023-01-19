@@ -41,15 +41,17 @@ func parseToGauge(gauge prometheus.Gauge, value string) {
 }
 
 func parseAdditionalLabels(additionalLabels []string, labels map[string]string) (result []string) {
-alLoop:
 	for _, al := range additionalLabels {
-		for k, v := range labels {
-			if k == al {
-				result = append(result, v)
-				continue alLoop
-			}
-		}
-		result = append(result, "")
+		result = append(result, findLabel(labels, al))
 	}
 	return result
+}
+
+func findLabel(labels map[string]string, label string) string {
+	for k, v := range labels {
+		if k == label {
+			return v
+		}
+	}
+	return ""
 }
