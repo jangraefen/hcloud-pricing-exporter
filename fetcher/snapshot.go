@@ -8,12 +8,11 @@ var _ Fetcher = &snapshot{}
 
 // NewSnapshot creates a new fetcher that will collect pricing information on server snapshots.
 func NewSnapshot(pricing *PriceProvider, additionalLabels ...string) Fetcher {
-	return &snapshot{newBase(pricing, "snapshot", additionalLabels...), additionalLabels}
+	return &snapshot{newBase(pricing, "snapshot", nil, additionalLabels...)}
 }
 
 type snapshot struct {
 	*baseFetcher
-	additionalLabels []string
 }
 
 func (snapshot snapshot) Run(client *hcloud.Client) error {

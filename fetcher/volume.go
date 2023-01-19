@@ -10,13 +10,11 @@ var _ Fetcher = &volume{}
 
 // NewVolume creates a new fetcher that will collect pricing information on volumes.
 func NewVolume(pricing *PriceProvider, additionalLabels ...string) Fetcher {
-	labels := append([]string{"location", "bytes"}, additionalLabels...)
-	return &volume{newBase(pricing, "volume", labels...), additionalLabels}
+	return &volume{newBase(pricing, "volume", []string{"location", "bytes"}, additionalLabels...)}
 }
 
 type volume struct {
 	*baseFetcher
-	additionalLabels []string
 }
 
 func (volume volume) Run(client *hcloud.Client) error {

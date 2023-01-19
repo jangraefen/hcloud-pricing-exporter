@@ -10,13 +10,11 @@ var _ Fetcher = &server{}
 
 // NewServer creates a new fetcher that will collect pricing information on servers.
 func NewServer(pricing *PriceProvider, additionalLabels ...string) Fetcher {
-	labels := append([]string{"location", "type"}, additionalLabels...)
-	return &loadBalancer{newBase(pricing, "server", labels...), additionalLabels}
+	return &loadBalancer{newBase(pricing, "server", []string{"location", "type"}, additionalLabels...)}
 }
 
 type server struct {
 	*baseFetcher
-	additionalLabels []string
 }
 
 func (server server) Run(client *hcloud.Client) error {
