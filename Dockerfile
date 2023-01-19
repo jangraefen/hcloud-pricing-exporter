@@ -15,4 +15,4 @@ RUN adduser -S -D -H -h /app execuser
 USER execuser
 
 # Run the application
-ENTRYPOINT ["./run"]
+ENTRYPOINT ["./run", "-additional-labels", "service,environment,owner"]
