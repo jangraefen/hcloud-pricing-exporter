@@ -12,8 +12,8 @@ import (
 )
 
 var _ = Describe("For servers", Ordered, Label("servers"), func() {
-	sutServer := fetcher.NewServer(&fetcher.PriceProvider{Client: testClient})
-	sutBackup := fetcher.NewServerBackup(&fetcher.PriceProvider{Client: testClient})
+	sutServer := fetcher.NewServer(&fetcher.PriceProvider{Client: testClient}, "suite")
+	sutBackup := fetcher.NewServerBackup(&fetcher.PriceProvider{Client: testClient}, "suite")
 
 	BeforeAll(func(ctx context.Context) {
 		location, _, err := testClient.Location.GetByName(ctx, "fsn1")
@@ -77,24 +77,26 @@ var _ = Describe("For servers", Ordered, Label("servers"), func() {
 
 		It("should get prices for correct values", func() {
 			By("Checking server prices")
-			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("test-server", "fsn1", "cx11"))).Should(BeNumerically(">", 0.0))
-			Expect(testutil.ToFloat64(sutServer.GetMonthly().WithLabelValues("test-server", "fsn1", "cx11"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("test-server", "fsn1", "cx11", "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sutServer.GetMonthly().WithLabelValues("test-server", "fsn1", "cx11", "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
 
 			By("Checking server backup prices")
-			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("test-server", "fsn1", "cx11"))).Should(BeNumerically(">", 0.0))
-			Expect(testutil.ToFloat64(sutBackup.GetMonthly().WithLabelValues("test-server", "fsn1", "cx11"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("test-server", "fsn1", "cx11", "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sutBackup.GetMonthly().WithLabelValues("test-server", "fsn1", "cx11", "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
 		})
 
 		It("should get zero for incorrect values", func() {
 			By("Checking server prices")
-			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("invalid-name", "fsn1", "cx11"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("test-server", "nbg1", "cx11"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("test-server", "fsn1", "cx21"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("invalid-name", "fsn1", "cx11", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("test-server", "nbg1", "cx11", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("test-server", "fsn1", "cx21", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("test-server", "fsn1", "cx11", "e3e_suite_test"))).Should(BeNumerically("==", 0))
 
 			By("Checking server backup prices")
-			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("invalid-name", "fsn1", "cx11"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("test-server", "nbg1", "cx11"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("test-server", "fsn1", "cx21"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("invalid-name", "fsn1", "cx11", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("test-server", "nbg1", "cx11", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("test-server", "fsn1", "cx21", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("test-server", "fsn1", "cx11", "e3e_suite_test"))).Should(BeNumerically("==", 0))
 		})
 	})
 })

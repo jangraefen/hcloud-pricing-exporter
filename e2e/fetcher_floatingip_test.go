@@ -11,7 +11,7 @@ import (
 )
 
 var _ = Describe("For floating IPs", Ordered, Label("floatingips"), func() {
-	sut := fetcher.NewFloatingIP(&fetcher.PriceProvider{Client: testClient})
+	sut := fetcher.NewFloatingIP(&fetcher.PriceProvider{Client: testClient}, "suite")
 
 	BeforeAll(func(ctx context.Context) {
 		location, _, err := testClient.Location.GetByName(ctx, "fsn1")
@@ -36,14 +36,15 @@ var _ = Describe("For floating IPs", Ordered, Label("floatingips"), func() {
 		})
 
 		It("should get prices for correct values", func() {
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-floatingip", "fsn1", "ipv6"))).Should(BeNumerically(">", 0.0))
-			Expect(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-floatingip", "fsn1", "ipv6"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-floatingip", "fsn1", "ipv6", "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-floatingip", "fsn1", "ipv6", "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
 		})
 
 		It("should get zero for incorrect values", func() {
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("invalid-name", "fsn1", "ipv6"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-floatingip", "nbg1", "ipv6"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-floatingip", "fsn1", "ipv4"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("invalid-name", "fsn1", "ipv6", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-floatingip", "nbg1", "ipv6", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-floatingip", "fsn1", "ipv4", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-floatingip", "fsn1", "ipv6", "e3e_suite_test"))).Should(BeNumerically("==", 0))
 		})
 	})
 })
