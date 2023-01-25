@@ -9,8 +9,8 @@ import (
 var _ Fetcher = &loadbalancerTraffic{}
 
 // NewLoadbalancerTraffic creates a new fetcher that will collect pricing information on load balancer traffic.
-func NewLoadbalancerTraffic(pricing *PriceProvider) Fetcher {
-	return &loadbalancerTraffic{newBase(pricing, "loadbalancer_traffic", "location", "type")}
+func NewLoadbalancerTraffic(pricing *PriceProvider, additionalLabels ...string) Fetcher {
+	return &loadbalancerTraffic{newBase(pricing, "loadbalancer_traffic", []string{"location", "type"}, additionalLabels...)}
 }
 
 type loadbalancerTraffic struct {
@@ -26,18 +26,26 @@ func (loadbalancerTraffic loadbalancerTraffic) Run(client *hcloud.Client) error 
 	for _, lb := range loadBalancers {
 		location := lb.Location
 
+		labels := append([]string{
+			lb.Name,
+			location.Name,
+			lb.LoadBalancerType.Name,
+		},
+			parseAdditionalLabels(loadbalancerTraffic.additionalLabels, lb.Labels)...,
+		)
+
 		additionalTraffic := int(lb.OutgoingTraffic) - int(lb.IncludedTraffic)
 		if additionalTraffic < 0 {
-			loadbalancerTraffic.hourly.WithLabelValues(lb.Name, location.Name, lb.LoadBalancerType.Name).Set(0)
-			loadbalancerTraffic.monthly.WithLabelValues(lb.Name, location.Name, lb.LoadBalancerType.Name).Set(0)
+			loadbalancerTraffic.hourly.WithLabelValues(labels...).Set(0)
+			loadbalancerTraffic.monthly.WithLabelValues(labels...).Set(0)
 			break
 		}
 
 		monthlyPrice := math.Ceil(float64(additionalTraffic)/sizeTB) * loadbalancerTraffic.pricing.Traffic()
 		hourlyPrice := pricingPerHour(monthlyPrice)
 
-		loadbalancerTraffic.hourly.WithLabelValues(lb.Name, location.Name, lb.LoadBalancerType.Name).Set(hourlyPrice)
-		loadbalancerTraffic.monthly.WithLabelValues(lb.Name, location.Name, lb.LoadBalancerType.Name).Set(monthlyPrice)
+		loadbalancerTraffic.hourly.WithLabelValues(labels...).Set(hourlyPrice)
+		loadbalancerTraffic.monthly.WithLabelValues(labels...).Set(monthlyPrice)
 	}
 
 	return nil

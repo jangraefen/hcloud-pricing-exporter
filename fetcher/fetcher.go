@@ -23,9 +23,10 @@ type Fetcher interface {
 }
 
 type baseFetcher struct {
-	pricing *PriceProvider
-	hourly  *prometheus.GaugeVec
-	monthly *prometheus.GaugeVec
+	pricing          *PriceProvider
+	hourly           *prometheus.GaugeVec
+	monthly          *prometheus.GaugeVec
+	additionalLabels []string
 }
 
 func (fetcher baseFetcher) GetHourly() *prometheus.GaugeVec {
@@ -36,8 +37,8 @@ func (fetcher baseFetcher) GetMonthly() *prometheus.GaugeVec {
 	return fetcher.monthly
 }
 
-func newBase(pricing *PriceProvider, resource string, additionalLabels ...string) *baseFetcher {
-	labels := []string{"name"}
+func newBase(pricing *PriceProvider, resource string, baselabels []string, additionalLabels ...string) *baseFetcher {
+	labels := append([]string{"name"}, baselabels...)
 	labels = append(labels, additionalLabels...)
 
 	hourlyGaugeOpts := prometheus.GaugeOpts{
@@ -54,9 +55,10 @@ func newBase(pricing *PriceProvider, resource string, additionalLabels ...string
 	}
 
 	return &baseFetcher{
-		pricing: pricing,
-		hourly:  prometheus.NewGaugeVec(hourlyGaugeOpts, labels),
-		monthly: prometheus.NewGaugeVec(monthlyGaugeOpts, labels),
+		pricing:          pricing,
+		hourly:           prometheus.NewGaugeVec(hourlyGaugeOpts, labels),
+		monthly:          prometheus.NewGaugeVec(monthlyGaugeOpts, labels),
+		additionalLabels: additionalLabels,
 	}
 }
 

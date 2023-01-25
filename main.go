@@ -3,8 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -20,15 +22,18 @@ const (
 )
 
 var (
-	hcloudAPIToken string
-	port           uint
-	fetchInterval  time.Duration
+	hcloudAPIToken       string
+	port                 uint
+	fetchInterval        time.Duration
+	additionalLabelsFlag string
+	additionalLabels     []string
 )
 
 func handleFlags() {
 	flag.StringVar(&hcloudAPIToken, "hcloud-token", "", "the token to authenticate against the HCloud API")
 	flag.UintVar(&port, "port", defaultPort, "the port that the exporter exposes its data on")
 	flag.DurationVar(&fetchInterval, "fetch-interval", defaultFetchInterval, "the interval between data fetching cycles")
+	flag.StringVar(&additionalLabelsFlag, "additional-labels", "", "comma separated additional labels to parse for all metrics, e.g: 'service,environment,owner'")
 	flag.Parse()
 
 	if hcloudAPIToken == "" {
@@ -39,6 +44,12 @@ func handleFlags() {
 	if hcloudAPIToken == "" {
 		panic(fmt.Errorf("no API token for HCloud specified, but required"))
 	}
+
+	additionalLabelsFlag = strings.TrimSpace(strings.ReplaceAll(additionalLabelsFlag, " ", ""))
+	additionalLabelsSlice := strings.Split(additionalLabelsFlag, ",")
+	if len(additionalLabelsSlice) > 0 && additionalLabelsSlice[0] != "" {
+		additionalLabels = additionalLabelsSlice
+	}
 }
 
 func main() {
@@ -48,15 +59,15 @@ func main() {
 	priceRepository := &fetcher.PriceProvider{Client: client}
 
 	fetchers := fetcher.Fetchers{
-		fetcher.NewFloatingIP(priceRepository),
-		fetcher.NewPrimaryIP(priceRepository),
-		fetcher.NewLoadbalancer(priceRepository),
-		fetcher.NewLoadbalancerTraffic(priceRepository),
-		fetcher.NewServer(priceRepository),
-		fetcher.NewServerBackup(priceRepository),
-		fetcher.NewServerTraffic(priceRepository),
-		fetcher.NewSnapshot(priceRepository),
-		fetcher.NewVolume(priceRepository),
+		fetcher.NewFloatingIP(priceRepository, additionalLabels...),
+		fetcher.NewPrimaryIP(priceRepository, additionalLabels...),
+		fetcher.NewLoadbalancer(priceRepository, additionalLabels...),
+		fetcher.NewLoadbalancerTraffic(priceRepository, additionalLabels...),
+		fetcher.NewServer(priceRepository, additionalLabels...),
+		fetcher.NewServerBackup(priceRepository, additionalLabels...),
+		fetcher.NewServerTraffic(priceRepository, additionalLabels...),
+		fetcher.NewSnapshot(priceRepository, additionalLabels...),
+		fetcher.NewVolume(priceRepository, additionalLabels...),
 	}
 
 	fetchers.MustRun(client)
@@ -67,6 +78,7 @@ func main() {
 	fetchers.RegisterCollectors(registry)
 
 	http.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
+	log.Printf("Listening on: http://0.0.0.0:%d\n", port)
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
 		panic(err)
 	}

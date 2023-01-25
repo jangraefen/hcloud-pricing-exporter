@@ -9,8 +9,8 @@ import (
 var _ Fetcher = &volume{}
 
 // NewVolume creates a new fetcher that will collect pricing information on volumes.
-func NewVolume(pricing *PriceProvider) Fetcher {
-	return &volume{newBase(pricing, "volume", "location", "bytes")}
+func NewVolume(pricing *PriceProvider, additionalLabels ...string) Fetcher {
+	return &volume{newBase(pricing, "volume", []string{"location", "bytes"}, additionalLabels...)}
 }
 
 type volume struct {
@@ -27,8 +27,16 @@ func (volume volume) Run(client *hcloud.Client) error {
 		monthlyPrice := float64(v.Size) * volume.pricing.Volume()
 		hourlyPrice := pricingPerHour(monthlyPrice)
 
-		volume.hourly.WithLabelValues(v.Name, v.Location.Name, strconv.Itoa(v.Size)).Set(hourlyPrice)
-		volume.monthly.WithLabelValues(v.Name, v.Location.Name, strconv.Itoa(v.Size)).Set(monthlyPrice)
+		labels := append([]string{
+			v.Name,
+			v.Location.Name,
+			strconv.Itoa(v.Size),
+		},
+			parseAdditionalLabels(volume.additionalLabels, v.Labels)...,
+		)
+
+		volume.hourly.WithLabelValues(labels...).Set(hourlyPrice)
+		volume.monthly.WithLabelValues(labels...).Set(monthlyPrice)
 	}
 
 	return nil
