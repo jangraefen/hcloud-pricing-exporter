@@ -62,3 +62,6 @@ helm upgrade --install hcloud-pricing-exporter hcloud-pricing-exporter/hcloud-pr
 - `hcloud_pricing_snapshot_monthly{name}`
 - `hcloud_pricing_volume_hourly{name, location, bytes}` _(Estimated based on the monthly price)_
 - `hcloud_pricing_volume_monthly{name, location, bytes}`
+
+Each exported metric can also be enriched with additional labels, coming from the actual labels on the Hetzner resource.
+To expose additional labels, use the `-additional-labels label1,label2,...` command line parameter.
