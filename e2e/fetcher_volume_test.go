@@ -11,7 +11,7 @@ import (
 )
 
 var _ = Describe("For volumes", Ordered, Label("volumes"), func() {
-	sut := fetcher.NewVolume(&fetcher.PriceProvider{Client: testClient})
+	sut := fetcher.NewVolume(&fetcher.PriceProvider{Client: testClient}, "suite")
 
 	BeforeAll(func(ctx context.Context) {
 		location, _, err := testClient.Location.GetByName(ctx, "fsn1")
@@ -36,14 +36,15 @@ var _ = Describe("For volumes", Ordered, Label("volumes"), func() {
 		})
 
 		It("should get prices for correct values", func() {
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-volume", "fsn1", "10"))).Should(BeNumerically(">", 0.0))
-			Expect(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-volume", "fsn1", "10"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-volume", "fsn1", "10", "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-volume", "fsn1", "10", "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
 		})
 
 		It("should get zero for incorrect values", func() {
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("invalid-name", "fsn1", "10"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-volume", "nbg1", "10"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-volume", "fsn1", "99"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("invalid-name", "fsn1", "10", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-volume", "nbg1", "10", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-volume", "fsn1", "99", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-volume", "fsn1", "10", "e3e_suite_test"))).Should(BeNumerically("==", 0))
 		})
 	})
 })
