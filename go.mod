@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/hetznercloud/hcloud-go v1.45.1
 	github.com/jtaczanowski/go-scheduler v0.1.0
-	github.com/onsi/ginkgo/v2 v2.9.5
+	github.com/onsi/ginkgo/v2 v2.9.7
 	github.com/onsi/gomega v1.27.7
 	github.com/prometheus/client_golang v1.15.1
 )
