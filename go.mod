@@ -3,11 +3,11 @@ module github.com/jangraefen/hcloud-pricing-exporter
 go 1.19
 
 require (
-	github.com/hetznercloud/hcloud-go v1.45.1
+	github.com/hetznercloud/hcloud-go v1.48.0
 	github.com/jtaczanowski/go-scheduler v0.1.0
 	github.com/onsi/ginkgo/v2 v2.10.0
 	github.com/onsi/gomega v1.27.8
-	github.com/prometheus/client_golang v1.15.1
+	github.com/prometheus/client_golang v1.16.0
 )
 
 require (
@@ -28,11 +28,11 @@ require (
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.42.0 // indirect
-	github.com/prometheus/procfs v0.9.0 // indirect
-	golang.org/x/crypto v0.9.0
-	golang.org/x/net v0.10.0 // indirect
-	golang.org/x/sys v0.8.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
+	github.com/prometheus/procfs v0.10.1 // indirect
+	golang.org/x/crypto v0.11.0
+	golang.org/x/net v0.12.0 // indirect
+	golang.org/x/sys v0.10.0 // indirect
+	golang.org/x/text v0.11.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
