@@ -6,18 +6,21 @@ updates:
       interval: "weekly"
     groups:
       github-actions:
-        patterns: *
+        patterns:
+          - "*"
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
       interval: "weekly"
     groups:
       gomod:
-        patterns: *
+        patterns:
+          - "*"
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"
     groups:
       docker:
-        patterns: *
+        patterns:
+          - "*"
