@@ -5,20 +5,19 @@ updates:
     schedule:
       interval: "weekly"
     groups:
-      all:
+      github-actions:
         patterns: *
   - package-ecosystem: "gomod"
     directory: "/"
-    patterns: *
     schedule:
       interval: "weekly"
     groups:
-      all:
+      gomod:
         patterns: *
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"
     groups:
-      all:
+      docker:
         patterns: *
