@@ -4,11 +4,21 @@ updates:
     directory: "/.github/workflows/"
     schedule:
       interval: "weekly"
+    groups:
+      all:
+        patterns: *
   - package-ecosystem: "gomod"
     directory: "/"
+    patterns: *
     schedule:
       interval: "weekly"
+    groups:
+      all:
+        patterns: *
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      all:
+        patterns: *
