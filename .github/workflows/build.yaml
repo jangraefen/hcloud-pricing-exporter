@@ -33,7 +33,7 @@ jobs:
         with:
           go-version: ^1.20
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Get dependencies
         run: |
           export GO111MODULE=on
@@ -51,7 +51,7 @@ jobs:
         with:
           go-version: ^1.20
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Get dependencies
         run: |
           export GO111MODULE=on
@@ -78,7 +78,7 @@ jobs:
         with:
           go-version: ^1.20
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Get dependencies
         run: |
           export GO111MODULE=on
