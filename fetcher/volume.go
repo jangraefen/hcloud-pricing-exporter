@@ -18,7 +18,7 @@ type volume struct {
 }
 
 func (volume volume) Run(client *hcloud.Client) error {
-	volumes, _, err := client.Volume.List(ctx, hcloud.VolumeListOpts{})
+	volumes, err := client.Volume.All(ctx)
 	if err != nil {
 		return err
 	}

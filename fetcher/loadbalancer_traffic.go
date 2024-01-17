@@ -18,7 +18,7 @@ type loadbalancerTraffic struct {
 }
 
 func (loadbalancerTraffic loadbalancerTraffic) Run(client *hcloud.Client) error {
-	loadBalancers, _, err := client.LoadBalancer.List(ctx, hcloud.LoadBalancerListOpts{})
+	loadBalancers, err := client.LoadBalancer.All(ctx)
 	if err != nil {
 		return err
 	}

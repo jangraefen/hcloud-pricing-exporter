@@ -16,7 +16,7 @@ type floatingIP struct {
 }
 
 func (floatingIP floatingIP) Run(client *hcloud.Client) error {
-	floatingIPs, _, err := client.FloatingIP.List(ctx, hcloud.FloatingIPListOpts{})
+	floatingIPs, err := client.FloatingIP.All(ctx)
 	if err != nil {
 		return err
 	}

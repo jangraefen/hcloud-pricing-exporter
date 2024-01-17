@@ -16,7 +16,7 @@ type snapshot struct {
 }
 
 func (snapshot snapshot) Run(client *hcloud.Client) error {
-	images, _, err := client.Image.List(ctx, hcloud.ImageListOpts{})
+	images, err := client.Image.All(ctx)
 	if err != nil {
 		return err
 	}

@@ -16,7 +16,7 @@ type primaryIP struct {
 }
 
 func (primaryIP primaryIP) Run(client *hcloud.Client) error {
-	primaryIPs, _, err := client.PrimaryIP.List(ctx, hcloud.PrimaryIPListOpts{})
+	primaryIPs, err := client.PrimaryIP.All(ctx)
 	if err != nil {
 		return err
 	}

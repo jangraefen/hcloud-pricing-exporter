@@ -18,7 +18,7 @@ type serverBackup struct {
 }
 
 func (serverBackup serverBackup) Run(client *hcloud.Client) error {
-	servers, _, err := client.Server.List(ctx, hcloud.ServerListOpts{})
+	servers, err := client.Server.All(ctx)
 	if err != nil {
 		return err
 	}
