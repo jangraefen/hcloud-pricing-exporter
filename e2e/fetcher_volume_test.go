@@ -3,7 +3,7 @@ package e2e_test
 import (
 	"context"
 
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/jangraefen/hcloud-pricing-exporter/fetcher"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"

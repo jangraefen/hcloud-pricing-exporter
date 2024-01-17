@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // PriceProvider provides easy access to current HCloud prices.
