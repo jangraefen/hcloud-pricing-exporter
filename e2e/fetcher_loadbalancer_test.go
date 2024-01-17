@@ -1,3 +1,4 @@
+//nolint:revive
 package e2e_test
 
 import (
