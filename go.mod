@@ -1,6 +1,6 @@
 module github.com/jangraefen/hcloud-pricing-exporter
 
-go 1.19
+go 1.20
 
 require (
 	github.com/hetznercloud/hcloud-go/v2 v2.6.0
