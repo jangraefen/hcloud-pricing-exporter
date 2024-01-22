@@ -5,8 +5,8 @@ go 1.20
 require (
 	github.com/hetznercloud/hcloud-go/v2 v2.6.0
 	github.com/jtaczanowski/go-scheduler v0.1.0
-	github.com/onsi/ginkgo/v2 v2.14.0
-	github.com/onsi/gomega v1.30.0
+	github.com/onsi/ginkgo/v2 v2.15.0
+	github.com/onsi/gomega v1.31.1
 	github.com/prometheus/client_golang v1.18.0
 	golang.org/x/crypto v0.18.0
 )
