@@ -39,7 +39,7 @@ jobs:
           export GO111MODULE=on
           go get -v -t -d ./...
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v5
         with:
           install-mode: binary
           version: latest
@@ -89,7 +89,7 @@ jobs:
           HCLOUD_API_TOKEN: ${{ secrets.HCLOUD_API_TOKEN }}
         run: go test -v -race -covermode=atomic "-coverprofile=coverprofile.out" ./...
       - name: Report coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           file: coverprofile.out
           fail_ci_if_error: true
