@@ -17,7 +17,13 @@ spec:
       {{- end }}
       labels:
         {{- include "hcloud-pricing-exporter.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ include "hcloud-pricing-exporter.serviceAccountName" . }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -33,6 +39,8 @@ spec:
                 secretKeyRef:
                   name: {{ include "hcloud-pricing-exporter.fullname" . }}
                   key: token
+              {{- else if .Values.secret.file }}
+              value: {{ printf "file:%s" .Values.secret.file }}
               {{- else }}
               valueFrom:
                 secretKeyRef:

@@ -44,6 +44,16 @@ func handleFlags() {
 	if hcloudAPIToken == "" {
 		panic(fmt.Errorf("no API token for HCloud specified, but required"))
 	}
+	if strings.HasPrefix(hcloudAPIToken, "file:") {
+		hcloudAPITokenBytes, err := os.ReadFile(strings.TrimPrefix(hcloudAPIToken, "file:"))
+		if err != nil {
+			panic(fmt.Errorf("failed to read HCLOUD_TOKEN from file: %s", err.Error()))
+		}
+		hcloudAPIToken = strings.TrimSpace(string(hcloudAPITokenBytes))
+	}
+	if len(hcloudAPIToken) != 64 {
+		panic(fmt.Errorf("invalid API token for HCloud specified, must be 64 characters long"))
+	}
 
 	additionalLabelsFlag = strings.TrimSpace(strings.ReplaceAll(additionalLabelsFlag, " ", ""))
 	additionalLabelsSlice := strings.Split(additionalLabelsFlag, ",")
