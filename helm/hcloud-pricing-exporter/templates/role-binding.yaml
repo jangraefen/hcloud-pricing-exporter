@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: {{ printf "%sBinding" .Values.rbac.kind }}
+metadata:
+  name: {{ include "hcloud-pricing-exporter.fullname" . }}
+  labels:
+    {{- include "hcloud-pricing-exporter.labels" . | nindent 4 }}
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: ServiceAccount
+    name: {{ include "hcloud-pricing-exporter.serviceAccountName" . }}
+    {{- if eq .Values.rbac.kind "ClusterRole" }}
+    namespace: {{ .Release.Namespace }}
+    {{- end }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: {{ .Values.rbac.kind }}
+  name: {{ include "hcloud-pricing-exporter.fullname" . }}
+{{- end }}

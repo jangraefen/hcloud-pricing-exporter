@@ -32,7 +32,7 @@ secret:
     key:
   # to read HCLOUD_TOKEN from file, set file to your file path (e.g. /secrets/token)
   # the file must be provided manually (e.g. via secret injection)
-  file: ""
+  file: "/etc/hcloud/token"
 
 serviceMonitor:
   create: false
@@ -47,3 +47,26 @@ nodeSelector: { }
 tolerations: [ ]
 
 affinity: { }
+
+serviceAccount:
+  create: false
+  name: ""
+  annotations: { }
+
+rbac:
+  create: false
+  # can be set to ClusterRole or Role
+  kind: ClusterRole
+  rules: [ ]
+    # - apiGroups:
+    #     - authorization.k8s.io
+    #   resources:
+    #     - subjectaccessreviews
+    #   verbs:
+    #     - create
+    # - apiGroups:
+    #     - authentication.k8s.io
+    #   resources:
+    #     - tokenreviews
+    #   verbs:
+    #     - create
