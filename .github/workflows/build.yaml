@@ -90,6 +90,8 @@ jobs:
         run: go test -v -race -covermode=atomic "-coverprofile=coverprofile.out" ./...
       - name: Report coverage
         uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
           file: coverprofile.out
           fail_ci_if_error: true
