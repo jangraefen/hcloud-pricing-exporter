@@ -13,7 +13,7 @@ builds:
       - linux
       - windows
     goarch:
-      - 386
+      - "386"
       - amd64
       - arm
       - arm64
