@@ -6,8 +6,7 @@ metadata:
   labels:
     {{- include "hcloud-pricing-exporter.labels" . | nindent 4 }}
 subjects:
-  - apiGroup: rbac.authorization.k8s.io
-    kind: ServiceAccount
+  - kind: ServiceAccount
     name: {{ include "hcloud-pricing-exporter.serviceAccountName" . }}
     {{- if eq .Values.rbac.kind "ClusterRole" }}
     namespace: {{ .Release.Namespace }}

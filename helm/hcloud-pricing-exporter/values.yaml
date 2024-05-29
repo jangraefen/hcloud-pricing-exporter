@@ -32,7 +32,7 @@ secret:
     key:
   # to read HCLOUD_TOKEN from file, set file to your file path (e.g. /secrets/token)
   # the file must be provided manually (e.g. via secret injection)
-  file: "/etc/hcloud/token"
+  file: ""
 
 serviceMonitor:
   create: false
