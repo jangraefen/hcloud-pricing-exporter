@@ -3,7 +3,7 @@ module github.com/jangraefen/hcloud-pricing-exporter
 go 1.22
 
 require (
-	github.com/hetznercloud/hcloud-go/v2 v2.6.0
+	github.com/hetznercloud/hcloud-go/v2 v2.9.0
 	github.com/jtaczanowski/go-scheduler v0.1.0
 	github.com/onsi/ginkgo/v2 v2.19.0
 	github.com/onsi/gomega v1.33.1
