@@ -16,9 +16,9 @@ keywords:
 
 type: application
 
-version: 0.9.0-r1
-appVersion: 0.9.0
+version: 0.10.0-r1
+appVersion: 0.10.0
 
 annotations:
   artifacthub.io/changes: |
-    - Add support for Vault injected secrets
+    - Use new fields for server and load balancer traffic prices.
