@@ -41,7 +41,12 @@ func (loadbalancerTraffic loadbalancerTraffic) Run(client *hcloud.Client) error 
 			break
 		}
 
-		monthlyPrice := math.Ceil(float64(additionalTraffic)/sizeTB) * loadbalancerTraffic.pricing.Traffic()
+		lbTrafficPrice, err := loadbalancerTraffic.pricing.LoadBalancerTraffic(lb.LoadBalancerType, location.Name)
+		if err != nil {
+			return err
+		}
+
+		monthlyPrice := math.Ceil(float64(additionalTraffic)/sizeTB) * lbTrafficPrice
 		hourlyPrice := pricingPerHour(monthlyPrice)
 
 		loadbalancerTraffic.hourly.WithLabelValues(labels...).Set(hourlyPrice)

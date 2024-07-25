@@ -41,7 +41,12 @@ func (serverTraffic serverTraffic) Run(client *hcloud.Client) error {
 			break
 		}
 
-		monthlyPrice := math.Ceil(float64(additionalTraffic)/sizeTB) * serverTraffic.pricing.Traffic()
+		serverTrafficPrice, err := serverTraffic.pricing.ServerTraffic(s.ServerType, location.Name)
+		if err != nil {
+			return err
+		}
+
+		monthlyPrice := math.Ceil(float64(additionalTraffic)/sizeTB) * serverTrafficPrice
 		hourlyPrice := pricingPerHour(monthlyPrice)
 
 		serverTraffic.hourly.WithLabelValues(labels...).Set(hourlyPrice)

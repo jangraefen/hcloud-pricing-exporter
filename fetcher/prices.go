@@ -66,12 +66,40 @@ func (provider *PriceProvider) Image() float64 {
 	return parsePrice(provider.getPricing().Image.PerGBMonth.Gross)
 }
 
-// Traffic returns the current price for a TB of extra traffic per month.
-func (provider *PriceProvider) Traffic() float64 {
+// ServerTraffic returns the current price for a TB of extra traffic per month.
+func (provider *PriceProvider) ServerTraffic(serverType *hcloud.ServerType, location string) (gross float64, err error) {
 	provider.pricingLock.RLock()
 	defer provider.pricingLock.RUnlock()
 
-	return parsePrice(provider.getPricing().Traffic.PerTB.Gross)
+	for _, byType := range provider.getPricing().ServerTypes {
+		if byType.ServerType.ID == serverType.ID {
+			for _, price := range byType.Pricings {
+				if price.Location.Name == location {
+					return parsePrice(price.PerTBTraffic.Gross), nil
+				}
+			}
+		}
+	}
+
+	return 0, fmt.Errorf("no traffic pricing found for server type %s and location %s", serverType.Name, location)
+}
+
+// LoadBalancerTraffic returns the current price for a TB of extra traffic per month.
+func (provider *PriceProvider) LoadBalancerTraffic(loadBalancerType *hcloud.LoadBalancerType, location string) (gross float64, err error) {
+	provider.pricingLock.RLock()
+	defer provider.pricingLock.RUnlock()
+
+	for _, byType := range provider.getPricing().LoadBalancerTypes {
+		if byType.LoadBalancerType.ID == loadBalancerType.ID {
+			for _, price := range byType.Pricings {
+				if price.Location.Name == location {
+					return parsePrice(price.PerTBTraffic.Gross), nil
+				}
+			}
+		}
+	}
+
+	return 0, fmt.Errorf("no traffic pricing found for load balancer type %s and location %s", loadBalancerType.Name, location)
 }
 
 // ServerBackup returns the percentage of base price increase for server backups per month.
