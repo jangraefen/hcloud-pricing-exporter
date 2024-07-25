@@ -3,6 +3,32 @@ entries:
   hcloud-pricing-exporter:
   - annotations:
       artifacthub.io/changes: |
+        - Use new fields for server and load balancer traffic prices.
+    apiVersion: v2
+    appVersion: 0.10.0
+    created: "2024-07-25T19:08:54.329690859Z"
+    description: A prometheus exporter for the current pricing and costs of your HCloud
+      account
+    digest: 8bae2038515531b64602ec8badcb36e7372093184050d252c4e7de6b8ef2547e
+    home: https://github.com/jangraefen/hcloud-pricing-exporter
+    keywords:
+    - hetzner
+    - hcloud
+    - prometheus
+    - monitoring
+    - prices
+    - expenses
+    maintainers:
+    - name: Jan Graefen
+    name: hcloud-pricing-exporter
+    sources:
+    - https://github.com/jangraefen/hcloud-pricing-exporter
+    type: application
+    urls:
+    - https://github.com/jangraefen/hcloud-pricing-exporter/releases/download/helm-v0.10.0-r1/hcloud-pricing-exporter-0.10.0-r1.tgz
+    version: 0.10.0-r1
+  - annotations:
+      artifacthub.io/changes: |
         - Add support for Vault injected secrets
     apiVersion: v2
     appVersion: 0.9.0
@@ -363,4 +389,4 @@ entries:
     urls:
     - https://github.com/jangraefen/hcloud-pricing-exporter/releases/download/helm-v0.1.1-r1/hcloud-pricing-exporter-0.1.1-r1.tgz
     version: 0.1.1-r1
-generated: "2024-05-29T19:34:47.250320651Z"
+generated: "2024-07-25T19:08:54.33011795Z"
