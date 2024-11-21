@@ -20,10 +20,10 @@ var _ = Describe("For servers", Ordered, Label("servers"), func() {
 		location, _, err := testClient.Location.GetByName(ctx, "fsn1")
 		Expect(err).NotTo(HaveOccurred())
 
-		serverType, _, err := testClient.ServerType.GetByName(ctx, "cx11")
+		serverType, _, err := testClient.ServerType.GetByName(ctx, "cx22")
 		Expect(err).NotTo(HaveOccurred())
 
-		image, _, err := testClient.Image.GetByNameAndArchitecture(ctx, "ubuntu-22.04", hcloud.ArchitectureX86)
+		image, _, err := testClient.Image.GetByNameAndArchitecture(ctx, "ubuntu-24.04", hcloud.ArchitectureX86)
 		Expect(err).NotTo(HaveOccurred())
 
 		sshKey, _, err := testClient.SSHKey.Create(ctx, hcloud.SSHKeyCreateOpts{
