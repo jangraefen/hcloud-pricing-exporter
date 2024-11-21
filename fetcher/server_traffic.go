@@ -34,7 +34,8 @@ func (serverTraffic serverTraffic) Run(client *hcloud.Client) error {
 			parseAdditionalLabels(serverTraffic.additionalLabels, s.Labels)...,
 		)
 
-		additionalTraffic := int(s.OutgoingTraffic) - int(s.IncludedTraffic)
+		//nolint:gosec
+		additionalTraffic := int64(s.OutgoingTraffic) - int64(s.IncludedTraffic)
 		if additionalTraffic < 0 {
 			serverTraffic.hourly.WithLabelValues(labels...).Set(0)
 			serverTraffic.monthly.WithLabelValues(labels...).Set(0)

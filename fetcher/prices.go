@@ -31,8 +31,8 @@ func (provider *PriceProvider) FloatingIP(ipType hcloud.FloatingIPType, location
 		}
 	}
 
-	// If the pricing can not be determined by the type and location, we fall back to the old pricing
-	return parsePrice(provider.getPricing().FloatingIP.Monthly.Gross)
+	// If the pricing can not be determined by the type and location, we just return 0.00
+	return 0.0
 }
 
 // PrimaryIP returns the current price for a primary IP per hour and month.
