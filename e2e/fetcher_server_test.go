@@ -12,6 +12,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus/testutil"
 )
 
+const (
+	serverTypeName = "cx22"
+)
+
 var _ = Describe("For servers", Ordered, Label("servers"), func() {
 	sutServer := fetcher.NewServer(&fetcher.PriceProvider{Client: testClient}, "suite")
 	sutBackup := fetcher.NewServerBackup(&fetcher.PriceProvider{Client: testClient}, "suite")
@@ -20,7 +24,7 @@ var _ = Describe("For servers", Ordered, Label("servers"), func() {
 		location, _, err := testClient.Location.GetByName(ctx, "fsn1")
 		Expect(err).NotTo(HaveOccurred())
 
-		serverType, _, err := testClient.ServerType.GetByName(ctx, "cx22")
+		serverType, _, err := testClient.ServerType.GetByName(ctx, serverTypeName)
 		Expect(err).NotTo(HaveOccurred())
 
 		image, _, err := testClient.Image.GetByNameAndArchitecture(ctx, "ubuntu-24.04", hcloud.ArchitectureX86)
@@ -78,26 +82,26 @@ var _ = Describe("For servers", Ordered, Label("servers"), func() {
 
 		It("should get prices for correct values", func() {
 			By("Checking server prices")
-			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("test-server", "fsn1", "cx11", "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
-			Expect(testutil.ToFloat64(sutServer.GetMonthly().WithLabelValues("test-server", "fsn1", "cx11", "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("test-server", "fsn1", serverTypeName, "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sutServer.GetMonthly().WithLabelValues("test-server", "fsn1", serverTypeName, "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
 
 			By("Checking server backup prices")
-			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("test-server", "fsn1", "cx11", "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
-			Expect(testutil.ToFloat64(sutBackup.GetMonthly().WithLabelValues("test-server", "fsn1", "cx11", "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("test-server", "fsn1", serverTypeName, "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sutBackup.GetMonthly().WithLabelValues("test-server", "fsn1", serverTypeName, "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
 		})
 
 		It("should get zero for incorrect values", func() {
 			By("Checking server prices")
-			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("invalid-name", "fsn1", "cx11", "e2e_suite_test"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("test-server", "nbg1", "cx11", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("invalid-name", "fsn1", serverTypeName, "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("test-server", "nbg1", serverTypeName, "e2e_suite_test"))).Should(BeNumerically("==", 0))
 			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("test-server", "fsn1", "cx21", "e2e_suite_test"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("test-server", "fsn1", "cx11", "e3e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sutServer.GetHourly().WithLabelValues("test-server", "fsn1", serverTypeName, "e3e_suite_test"))).Should(BeNumerically("==", 0))
 
 			By("Checking server backup prices")
-			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("invalid-name", "fsn1", "cx11", "e2e_suite_test"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("test-server", "nbg1", "cx11", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("invalid-name", "fsn1", serverTypeName, "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("test-server", "nbg1", serverTypeName, "e2e_suite_test"))).Should(BeNumerically("==", 0))
 			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("test-server", "fsn1", "cx21", "e2e_suite_test"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("test-server", "fsn1", "cx11", "e3e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sutBackup.GetHourly().WithLabelValues("test-server", "fsn1", serverTypeName, "e3e_suite_test"))).Should(BeNumerically("==", 0))
 		})
 	})
 })
