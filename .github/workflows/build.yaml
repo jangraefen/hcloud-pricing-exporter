@@ -93,5 +93,5 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
-          file: coverprofile.out
+          files: coverprofile.out
           fail_ci_if_error: true
