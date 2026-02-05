@@ -1,6 +1,6 @@
+//nolint:dupl
 package fetcher
 
-//nolint:dupl
 import (
 	"fmt"
 
