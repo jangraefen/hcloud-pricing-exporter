@@ -1,5 +1,6 @@
 package fetcher
 
+//nolint:dupl
 import (
 	"math"
 
