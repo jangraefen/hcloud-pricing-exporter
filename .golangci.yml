@@ -1,30 +1,46 @@
+version: "2"
 linters:
   enable:
-    - gosimple
-    - govet
-    - ineffassign
-    - staticcheck
     - bodyclose
     - dupl
-    - exportloopref
     - funlen
     - gocognit
     - goconst
     - gocritic
     - gocyclo
     - godot
-    - gofmt
     - goprintffuncname
     - gosec
     - prealloc
     - revive
-    - stylecheck
+    - staticcheck
     - unconvert
     - whitespace
-
-linters-settings:
-  govet:
-    check-shadowing: true
-    enable-all: true
-    disable:
-      - fieldalignment
+    - ineffassign
+  settings:
+    govet:
+      disable:
+        - fieldalignment
+      enable-all: true
+      enable:
+        - shadow
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofmt
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
