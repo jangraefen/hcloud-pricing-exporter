@@ -11,9 +11,10 @@ import (
 
 // PriceProvider provides easy access to current HCloud prices.
 type PriceProvider struct {
-	Client      *hcloud.Client
-	pricing     *hcloud.Pricing
-	pricingLock sync.RWMutex
+	Client          *hcloud.Client
+	pricing         *hcloud.Pricing
+	storageBoxTypes []*hcloud.StorageBoxType
+	pricingLock     sync.RWMutex
 }
 
 // FloatingIP returns the current price for a floating IP per month.
@@ -118,12 +119,31 @@ func (provider *PriceProvider) Volume() float64 {
 	return parsePrice(provider.getPricing().Volume.PerGBMonthly.Gross)
 }
 
+// StorageBox returns the current price for a storage box per hour and month.
+func (provider *PriceProvider) StorageBox(sbType *hcloud.StorageBoxType, location string) (hourly, monthly float64, err error) {
+	provider.pricingLock.RLock()
+	defer provider.pricingLock.RUnlock()
+
+	for _, t := range provider.getStorageBoxTypes() {
+		if t.ID == sbType.ID {
+			for _, pricing := range t.Pricings {
+				if pricing.Location == location {
+					return parsePrice(pricing.PriceHourly.Gross), parsePrice(pricing.PriceMonthly.Gross), nil
+				}
+			}
+		}
+	}
+
+	return 0, 0, fmt.Errorf("no pricing found for storage box type %s and location %s", sbType.Name, location)
+}
+
 // Sync forces the provider to re-fetch prices from the HCloud API.
 func (provider *PriceProvider) Sync() {
 	provider.pricingLock.Lock()
 	defer provider.pricingLock.Unlock()
 
 	provider.pricing = nil
+	provider.storageBoxTypes = nil
 }
 
 func (provider *PriceProvider) getPricing() *hcloud.Pricing {
@@ -137,6 +157,19 @@ func (provider *PriceProvider) getPricing() *hcloud.Pricing {
 	}
 
 	return provider.pricing
+}
+
+func (provider *PriceProvider) getStorageBoxTypes() []*hcloud.StorageBoxType {
+	if provider.storageBoxTypes == nil {
+		types, err := provider.Client.StorageBoxType.All(context.Background())
+		if err != nil {
+			panic(err)
+		}
+
+		provider.storageBoxTypes = types
+	}
+
+	return provider.storageBoxTypes
 }
 
 func parsePrice(rawPrice string) float64 {
