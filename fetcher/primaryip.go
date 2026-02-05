@@ -22,16 +22,16 @@ func (primaryIP primaryIP) Run(client *hcloud.Client) error {
 	}
 
 	for _, p := range primaryIPs {
-		datacenter := p.Datacenter
+		location := p.Location
 
-		hourlyPrice, monthlyPrice, err := primaryIP.pricing.PrimaryIP(p.Type, datacenter.Location.Name)
+		hourlyPrice, monthlyPrice, err := primaryIP.pricing.PrimaryIP(p.Type, location.Name)
 		if err != nil {
 			return err
 		}
 
 		labels := append([]string{
 			p.Name,
-			datacenter.Name,
+			location.Name, // Using location name as datacenter/location label since datacenter is deprecated
 			string(p.Type),
 		},
 			parseAdditionalLabels(primaryIP.additionalLabels, p.Labels)...,
