@@ -1,3 +1,4 @@
+//nolint:dupl
 package fetcher
 
 import (
@@ -24,7 +25,7 @@ func (server server) Run(client *hcloud.Client) error {
 	}
 
 	for _, s := range servers {
-		location := s.Datacenter.Location
+		location := s.Location
 
 		labels := append([]string{
 			s.Name,

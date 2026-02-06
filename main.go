@@ -77,6 +77,7 @@ func main() {
 		fetcher.NewServerBackup(priceRepository, additionalLabels...),
 		fetcher.NewServerTraffic(priceRepository, additionalLabels...),
 		fetcher.NewSnapshot(priceRepository, additionalLabels...),
+		fetcher.NewStorageBox(priceRepository, additionalLabels...),
 		fetcher.NewVolume(priceRepository, additionalLabels...),
 	}
 
