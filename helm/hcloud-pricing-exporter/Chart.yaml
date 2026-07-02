@@ -16,9 +16,9 @@ keywords:
 
 type: application
 
-version: 0.11.0-r1
-appVersion: 0.11.0
+version: 1.0.0-r1
+appVersion: 1.0.0
 
 annotations:
   artifacthub.io/changes: |
-    - Use new fields for server and load balancer traffic prices.
+    - Adapt to deprecation of datacenter field by Hetzner on the 01.06.2026.
