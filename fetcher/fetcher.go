@@ -1,3 +1,5 @@
+// Package fetcher contains the components that are responsible for scanning hcloud for components and getting their
+// prices for the exporter.
 package fetcher
 
 import (
@@ -8,9 +10,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-var (
-	ctx = context.Background()
-)
+var ctx = context.Background()
 
 // Fetcher defines a common interface for types that fetch pricing data from the HCloud API.
 type Fetcher interface {

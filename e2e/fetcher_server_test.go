@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	serverTypeName = "cx22"
+	serverTypeName = "cx23"
 )
 
 var _ = Describe("For servers", Ordered, Label("servers"), func() {

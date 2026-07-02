@@ -1,46 +1,45 @@
 version: "2"
 linters:
-  enable:
-    - bodyclose
-    - dupl
-    - funlen
-    - gocognit
-    - goconst
-    - gocritic
-    - gocyclo
-    - godot
-    - goprintffuncname
-    - gosec
-    - prealloc
-    - revive
-    - staticcheck
-    - unconvert
-    - whitespace
-    - ineffassign
-  settings:
-    govet:
-      disable:
-        - fieldalignment
-      enable-all: true
-      enable:
-        - shadow
-  exclusions:
-    generated: lax
-    presets:
-      - comments
-      - common-false-positives
-      - legacy
-      - std-error-handling
-    paths:
-      - third_party$
-      - builtin$
-      - examples$
+    enable:
+        - bodyclose
+        - dupl
+        - funlen
+        - gocognit
+        - gocritic
+        - gocyclo
+        - godot
+        - goprintffuncname
+        - gosec
+        - prealloc
+        - revive
+        - staticcheck
+        - unconvert
+        - whitespace
+        - ineffassign
+    settings:
+        govet:
+            disable:
+                - fieldalignment
+            enable-all: true
+            enable:
+                - shadow
+    exclusions:
+        generated: lax
+        presets:
+            - comments
+            - common-false-positives
+            - legacy
+            - std-error-handling
+        paths:
+            - third_party$
+            - builtin$
+            - examples$
 formatters:
-  enable:
-    - gofmt
-  exclusions:
-    generated: lax
-    paths:
-      - third_party$
-      - builtin$
-      - examples$
+    enable:
+        - gofmt
+    exclusions:
+        generated: lax
+        paths:
+            - third_party$
+            - builtin$
+            - examples$

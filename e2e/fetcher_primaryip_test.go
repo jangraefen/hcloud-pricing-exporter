@@ -19,6 +19,7 @@ var _ = Describe("For primary IPs", Ordered, Label("primaryips"), func() {
 		resv4, _, err := testClient.PrimaryIP.Create(ctx, hcloud.PrimaryIPCreateOpts{
 			Name:         "test-primaryipv4",
 			Labels:       testLabels,
+			Location:     "fsn1",
 			Datacenter:   "fsn1-dc14",
 			Type:         hcloud.PrimaryIPTypeIPv4,
 			AssigneeType: "server",
@@ -32,6 +33,7 @@ var _ = Describe("For primary IPs", Ordered, Label("primaryips"), func() {
 		resv6, _, err := testClient.PrimaryIP.Create(ctx, hcloud.PrimaryIPCreateOpts{
 			Name:         "test-primaryipv6",
 			Labels:       testLabels,
+			Location:     "fsn1",
 			Datacenter:   "fsn1-dc14",
 			Type:         hcloud.PrimaryIPTypeIPv6,
 			AssigneeType: "server",
@@ -51,28 +53,29 @@ var _ = Describe("For primary IPs", Ordered, Label("primaryips"), func() {
 
 		It("should get prices for correct values for v4", func() {
 			By("Checking IPv4 prices")
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-primaryipv4", "fsn1-dc14", "ipv4", "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
-			Expect(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-primaryipv4", "fsn1-dc14", "ipv4", "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
+
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-primaryipv4", "fsn1", "ipv4", "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
+			Expect(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-primaryipv4", "fsn1", "ipv4", "e2e_suite_test"))).Should(BeNumerically(">", 0.0))
 		})
 
 		It("should get prices for correct values for v6", func() {
 			By("Checking IPv6 prices")
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-primaryipv6", "fsn1-dc14", "ipv6", "e2e_suite_test"))).Should(BeNumerically("==", 0.0))
-			Expect(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-primaryipv6", "fsn1-dc14", "ipv6", "e2e_suite_test"))).Should(BeNumerically("==", 0.0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("test-primaryipv6", "fsn1", "ipv6", "e2e_suite_test"))).Should(BeNumerically("==", 0.0))
+			Expect(testutil.ToFloat64(sut.GetMonthly().WithLabelValues("test-primaryipv6", "fsn1", "ipv6", "e2e_suite_test"))).Should(BeNumerically("==", 0.0))
 		})
 
 		It("should get zero for incorrect values", func() {
 			By("Checking IPv4 prices")
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("invalid-name", "fsn1-dc14", "ipv4", "e2e_suite_test"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("est-primaryipv4", "nbg1-dc14", "ipv4", "e2e_suite_test"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("est-primaryipv4", "fsn1-dc14", "ipv6", "e2e_suite_test"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("est-primaryipv4", "fsn1-dc14", "ipv4", "e3e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("invalid-name", "fsn1", "ipv4", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("est-primaryipv4", "nbg1", "ipv4", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("est-primaryipv4", "fsn1", "ipv6", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("est-primaryipv4", "fsn1", "ipv4", "e3e_suite_test"))).Should(BeNumerically("==", 0))
 
 			By("Checking IPv6 prices")
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("invalid-name", "fsn1-dc14", "ipv6", "e2e_suite_test"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("est-primaryipv6", "nbg1-dc14", "ipv6", "e2e_suite_test"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("est-primaryipv6", "fsn1-dc14", "ipv4", "e2e_suite_test"))).Should(BeNumerically("==", 0))
-			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("est-primaryipv6", "fsn1-dc14", "ipv6", "e3e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("invalid-name", "fsn1", "ipv6", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("est-primaryipv6", "nbg1", "ipv6", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("est-primaryipv6", "fsn1", "ipv4", "e2e_suite_test"))).Should(BeNumerically("==", 0))
+			Expect(testutil.ToFloat64(sut.GetHourly().WithLabelValues("est-primaryipv6", "fsn1", "ipv6", "e3e_suite_test"))).Should(BeNumerically("==", 0))
 		})
 	})
 })

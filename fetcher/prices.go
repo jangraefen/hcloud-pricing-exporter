@@ -47,11 +47,9 @@ func (provider *PriceProvider) PrimaryIP(ipType hcloud.PrimaryIPType, location s
 	}
 
 	for _, byType := range provider.getPricing().PrimaryIPs {
-		if byType.Type == string(ipType) {
-			for _, pricing := range byType.Pricings {
-				if pricing.Location == location {
-					return parsePrice(pricing.Hourly.Gross), parsePrice(pricing.Monthly.Gross), nil
-				}
+		for _, pricing := range byType.Pricings {
+			if pricing.Location == location {
+				return parsePrice(pricing.Hourly.Gross), parsePrice(pricing.Monthly.Gross), nil
 			}
 		}
 	}

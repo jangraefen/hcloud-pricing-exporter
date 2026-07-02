@@ -29,11 +29,12 @@ func (primaryIP primaryIP) Run(client *hcloud.Client) error {
 			return err
 		}
 
-		labels := append([]string{
-			p.Name,
-			location.Name, // Using location name as datacenter/location label since datacenter is deprecated
-			string(p.Type),
-		},
+		labels := append(
+			[]string{
+				p.Name,
+				location.Name, // Using location name as datacenter/location label since datacenter is deprecated
+				string(p.Type),
+			},
 			parseAdditionalLabels(primaryIP.additionalLabels, p.Labels)...,
 		)
 
