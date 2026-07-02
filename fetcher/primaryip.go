@@ -8,7 +8,7 @@ var _ Fetcher = &floatingIP{}
 
 // NewPrimaryIP creates a new fetcher that will collect pricing information on primary IPs.
 func NewPrimaryIP(pricing *PriceProvider, additionalLabels ...string) Fetcher {
-	return &primaryIP{newBase(pricing, "primaryip", []string{"datacenter", "type"}, additionalLabels...)}
+	return &primaryIP{newBase(pricing, "primaryip", []string{"location", "type"}, additionalLabels...)}
 }
 
 type primaryIP struct {

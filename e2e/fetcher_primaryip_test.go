@@ -20,7 +20,6 @@ var _ = Describe("For primary IPs", Ordered, Label("primaryips"), func() {
 			Name:         "test-primaryipv4",
 			Labels:       testLabels,
 			Location:     "fsn1",
-			Datacenter:   "fsn1-dc14",
 			Type:         hcloud.PrimaryIPTypeIPv4,
 			AssigneeType: "server",
 		})
@@ -34,7 +33,6 @@ var _ = Describe("For primary IPs", Ordered, Label("primaryips"), func() {
 			Name:         "test-primaryipv6",
 			Labels:       testLabels,
 			Location:     "fsn1",
-			Datacenter:   "fsn1-dc14",
 			Type:         hcloud.PrimaryIPTypeIPv6,
 			AssigneeType: "server",
 		})
